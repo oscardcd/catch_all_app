@@ -1,10 +1,12 @@
-import 'package:catch_poke_app/ui/pokemons/pages/pokemon_screen.dart';
-import 'package:catch_poke_app/ui/pokemons/pokemon/pokemon_bloc.dart';
+import 'package:catch_poke_app/presentation/pokemons/pages/pokemon_screen.dart';
+import 'package:catch_poke_app/presentation/pokemons/pokemon/pokemon_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class App extends StatelessWidget {
+  const App({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

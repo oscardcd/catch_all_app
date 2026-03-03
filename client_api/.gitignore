@@ -27,3 +27,8 @@
 .dart_tool/
 .packages
 build/
+
+# Build runner generated files
+*.g.dart
+*.freezed.dart
+*.config.dart

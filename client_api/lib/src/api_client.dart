@@ -1,7 +1,7 @@
-import 'package:client_api/api/request.dart';
+import 'api_request.dart';
 import 'package:dio/dio.dart';
 
-import 'model/api_result.dart';
+import 'models/api_result.dart';
 
 class ApiClient {
   ApiClient._privateConstructor();

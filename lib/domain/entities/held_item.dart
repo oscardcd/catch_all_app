@@ -10,5 +10,6 @@ abstract class HeldItem with _$HeldItem {
     Species? item,
   }) = _HeldItem;
 
-  factory HeldItem.fromJson(Map<String, dynamic> json) => _$HeldItemFromJson(json);
+  factory HeldItem.fromJson(Map<String, dynamic> json) =>
+      _$HeldItemFromJson(json);
 }

@@ -2,7 +2,7 @@ import 'package:catch_all_app/domain/entities/all_pokemons.dart';
 import 'package:catch_all_app/domain/entities/pokemon.dart';
 import 'package:catch_all_app/domain/repositories/pokemon_repository.dart';
 import 'package:catch_all_app/data/services/pokemon_remote_data_source.dart';
-import 'package:client_api/api/model/api_result.dart';
+import 'package:client_api/client_api.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: PokemonRepository)

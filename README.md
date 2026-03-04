@@ -116,6 +116,25 @@ flutter run
 
 ---
 
+## 🛠 Git Workflow & Commits
+
+To maintain code quality and consistency, please follow these steps before committing your changes:
+
+1. **Analyze the code** (Do not commit if there are errors or warnings):
+```bash
+flutter analyze
+```
+
+2. **Add and Commit**:
+```bash
+git add .
+git commit -m "feat: your descriptive message"
+```
+
+3. **Push changes**:
+```bash
+git push
+```
 ## 🎯 Why Clean Architecture?
 
 * Scalable for large applications

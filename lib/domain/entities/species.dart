@@ -4,12 +4,11 @@ part 'species.freezed.dart';
 part 'species.g.dart';
 
 @freezed
-class Species with _$Species {
+abstract class Species with _$Species {
   factory Species({
     String? name,
     String? url,
   }) = _Species;
 
-  factory Species.fromJson(Map<String, dynamic> json) =>
-      _$SpeciesFromJson(json);
+  factory Species.fromJson(Map<String, dynamic> json) => _$SpeciesFromJson(json);
 }

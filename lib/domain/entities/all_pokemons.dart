@@ -1,11 +1,11 @@
-import 'package:catch_poke_app/data/model/pokemon.dart';
+import 'package:catch_all_app/domain/entities/pokemon.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'all_pokemons.freezed.dart';
 part 'all_pokemons.g.dart';
 
 @freezed
-class AllPokemons with _$AllPokemons {
+abstract class AllPokemons with _$AllPokemons {
   factory AllPokemons({
     int? count,
     String? next,

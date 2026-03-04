@@ -1,6 +1,5 @@
-import 'package:catch_poke_app/data/model/all_pokemons.dart';
-import 'package:catch_poke_app/data/model/pokemon.dart';
-import 'package:catch_poke_app/domain/repositories/pokemon_repository.dart';
+import 'package:catch_all_app/domain/entities/all_pokemons.dart';
+import 'package:catch_all_app/domain/repositories/pokemon_repository.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class PokemonUseCase {
@@ -8,8 +7,8 @@ abstract class PokemonUseCase {
 }
 
 @Injectable(as: PokemonUseCase)
-class PokemonUseCaseImpl implements PokemonUseCase {
-  PokemonUseCaseImpl(this._pokemonRepository);
+class PokemonService implements PokemonUseCase {
+  PokemonService(this._pokemonRepository);
 
   final PokemonRepository _pokemonRepository;
   @override

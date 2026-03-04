@@ -1,11 +1,11 @@
-import 'package:catch_poke_app/data/model/species.dart';
+import 'package:catch_all_app/domain/entities/species.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'held_item.freezed.dart';
 part 'held_item.g.dart';
 
 @freezed
-class HeldItem with _$HeldItem {
+abstract class HeldItem with _$HeldItem {
   factory HeldItem({
     Species? item,
   }) = _HeldItem;

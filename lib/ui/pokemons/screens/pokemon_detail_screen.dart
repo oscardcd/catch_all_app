@@ -1,11 +1,9 @@
-import 'package:catch_poke_app/data/model/pokemon.dart';
-import 'package:catch_poke_app/domain/use_case/pokemon_use_case.dart';
-import 'package:catch_poke_app/ui/pokemons/pokemon/pokemon_bloc.dart';
+import 'package:catch_all_app/ui/pokemons/bloc/pokemon_bloc/pokemon_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PokemonScreen extends StatelessWidget {
-  const PokemonScreen({Key? key}) : super(key: key);
+class PokemonDetailScreen extends StatelessWidget {
+  const PokemonDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

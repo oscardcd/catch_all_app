@@ -1,11 +1,3 @@
-import 'package:catch_all_app/app.dart';
-import 'package:catch_all_app/data/injector.dart';
-import 'package:flutter/material.dart';
-import 'package:injectable/injectable.dart';
+import 'package:catch_all_app/bootstrap.dart';
 
-@injectableInit
-void main() {
-  configure('dev');
-
-  runApp(App());
-}
+void main() => bootstrap();

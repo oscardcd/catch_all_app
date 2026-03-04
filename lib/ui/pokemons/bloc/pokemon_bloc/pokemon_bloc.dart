@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:catch_all_app/domain/entities/pokemon.dart';
-import 'package:catch_all_app/domain/services/pokemon_use_case.dart';
+import 'package:catch_all_app/domain/services/pokemon_service.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 

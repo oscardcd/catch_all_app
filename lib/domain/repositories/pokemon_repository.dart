@@ -1,5 +1,5 @@
-import 'package:catch_poke_app/data/model/all_pokemons.dart';
-import 'package:catch_poke_app/data/model/pokemon.dart';
+import 'package:catch_all_app/domain/entities/all_pokemons.dart';
+import 'package:catch_all_app/domain/entities/pokemon.dart';
 
 abstract class PokemonRepository {
   Future<AllPokemons?> getPokemons(

@@ -1,16 +1,132 @@
-# catch_poke_app
+# catch_all_app
 
-A new Flutter project.
+A scalable Flutter application built using **Clean Architecture** principles to ensure maintainability, testability, and separation of concerns.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🏗 Architecture
 
-A few resources to get you started if this is your first Flutter project:
+This project follows **Clean Architecture**, inspired by Robert C. Martin (Uncle Bob).
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+The codebase is organized into three main layers:
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+lib/
+│
+├── core/               # Shared utilities, constants, themes, errors
+│
+├── data/               # Data sources and repository implementations
+│   ├── models/
+│   ├── services/
+│   └── repositories/
+│
+├── domain/             # Business logic (pure Dart)
+│   ├── entities/
+│   ├── repositories/
+│   └── services/
+│
+└── ui/       # UI & State management
+    ├── feature/
+            ├── screens/
+            ├── widgets/
+            └── bloc/ (or cubit / blocs)
+```
+
+---
+
+## 📚 Clean Architecture Layers
+
+### 1️⃣ Presentation Layer
+
+* UI components (Screens, Widgets)
+* State management (BLoC / Cubit)
+* Calls repositories from the domain layer
+* Does NOT contain business logic
+
+### 2️⃣ Domain Layer
+
+* Entities (Enterprise business objects)
+* Repository contracts (abstract classes)
+
+
+This layer has **no dependency on Flutter**.
+
+### 3️⃣ Data Layer
+
+* Repository implementations
+* Remote and local data sources
+* DTO / Model mapping
+* Converts raw data into domain entities
+
+---
+
+## 🔄 Dependency Rule
+
+Dependencies always point inward:
+
+```
+Presentation → Domain ← Data
+```
+
+* The domain layer does not depend on any other layer.
+* The data layer depends on domain.
+* The presentation layer depends on domain.
+
+---
+
+## 🧪 Testing Strategy
+
+* Unit tests for use cases
+* Mock repositories for domain testing
+* Widget tests for presentation
+* Integration tests for full flows
+
+---
+
+## 📦 State Management
+
+This project uses:
+
+* flutter_bloc (or replace with your actual state manager)
+* get_it for dependency injection
+* freezed for immutable models
+
+---
+
+## 🚀 Getting Started
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/oscardcd/catch_all_app.git
+```
+
+2. Install dependencies:
+
+```bash
+flutter pub get
+flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+3. Run the project:
+
+```bash
+flutter run
+```
+
+---
+
+## 🎯 Why Clean Architecture?
+
+* Scalable for large applications
+* Easy to test
+* Clear separation of concerns
+* Independent business logic
+* Maintainable over time
+
+---
+
+## 👨‍💻 Author
+
+Oscar Correa
+Software Engineer | Flutter Developer

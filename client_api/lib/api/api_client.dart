@@ -18,8 +18,8 @@ class ApiClient {
     dio = Dio(BaseOptions(
       baseUrl: baseUrl,
       headers: headers,
-      connectTimeout: 6000,
-      receiveTimeout: 5000,
+      connectTimeout: const Duration(milliseconds: 6000),
+      receiveTimeout: const Duration(milliseconds: 5000),
     ));
 
     if (interceptors != null) {
@@ -27,8 +27,7 @@ class ApiClient {
     }
   }
 
-  Future<ApiResult<T>> request<T>(
-      ApiRequest request, Function(dynamic) fromJson) async {
+  Future<ApiResult<T>> request<T>(ApiRequest request, Function(dynamic) fromJson) async {
     try {
       final response = await _instance.dio.request(request.url,
           data: request.body,

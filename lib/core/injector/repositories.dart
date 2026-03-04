@@ -1,12 +1,7 @@
-import 'package:catch_all_app/data/repositories/auth_repository_impl.dart';
 import 'package:catch_all_app/domain/repositories/auth_repository.dart';
 import 'package:get_it/get_it.dart';
 
-Future<void> injectRepositories() async {
-  GetIt.I.registerLazySingleton<IAuthRepository>(
-    () => AuthRepositoryImpl(),
-  );
-}
+Future<void> injectRepositories() async {}
 
 class Repositories {
   const Repositories._();

@@ -4,7 +4,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:catch_all_app/domain/repositories/auth_repository.dart';
 import 'package:catch_all_app/domain/models/user_model.dart';
 import 'package:local_storage/local_storage.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable(as: IAuthRepository)
 class AuthRepositoryImpl implements IAuthRepository {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
@@ -20,6 +22,9 @@ class AuthRepositoryImpl implements IAuthRepository {
   })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
         _googleSignIn = googleSignIn ?? GoogleSignIn(),
         _localStorage = localStorage ?? LocalStorage.instance;
+
+  @factoryMethod
+  static AuthRepositoryImpl create() => AuthRepositoryImpl();
 
   @override
   Future<UserModel> signInWithGoogle() async {

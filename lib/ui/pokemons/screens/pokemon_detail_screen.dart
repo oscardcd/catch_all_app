@@ -1,9 +1,17 @@
 import 'package:catch_all_app/ui/pokemons/bloc/pokemon_bloc/pokemon_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class PokemonDetailScreen extends StatelessWidget {
-  const PokemonDetailScreen({super.key});
+  const PokemonDetailScreen._();
+
+  static const String route = '/pokemons';
+  static const String name = 'pokemons';
+
+  static Widget builder(BuildContext _, GoRouterState __) {
+    return const PokemonDetailScreen._();
+  }
 
   @override
   Widget build(BuildContext context) {

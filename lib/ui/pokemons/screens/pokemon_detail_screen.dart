@@ -20,7 +20,9 @@ class PokemonDetailScreen extends StatelessWidget {
                           (index) => Wrap(
                                 children: [
                                   Column(
-                                    children: [Text(pokemons[index].name ?? 'no name')],
+                                    children: [
+                                      Text(pokemons[index].name ?? 'no name')
+                                    ],
                                   )
                                 ],
                               )),

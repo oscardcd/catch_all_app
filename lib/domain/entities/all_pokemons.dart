@@ -13,5 +13,6 @@ abstract class AllPokemons with _$AllPokemons {
     List<Pokemon>? results,
   }) = _AllPokemons;
 
-  factory AllPokemons.fromJson(Map<String, dynamic> json) => _$AllPokemonsFromJson(json);
+  factory AllPokemons.fromJson(Map<String, dynamic> json) =>
+      _$AllPokemonsFromJson(json);
 }

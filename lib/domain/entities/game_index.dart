@@ -11,5 +11,6 @@ abstract class GameIndex with _$GameIndex {
     Species? version,
   }) = _GameIndex;
 
-  factory GameIndex.fromJson(Map<String, dynamic> json) => _$GameIndexFromJson(json);
+  factory GameIndex.fromJson(Map<String, dynamic> json) =>
+      _$GameIndexFromJson(json);
 }

@@ -18,7 +18,8 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
 
   final PokemonUseCase _useCase;
 
-  FutureOr<void> _fetchPokemonsToState(_FetchPokemon event, Emitter<PokemonState> emit) async {
+  FutureOr<void> _fetchPokemonsToState(
+      _FetchPokemon event, Emitter<PokemonState> emit) async {
     emit(const PokemonState.loadInProgress());
     try {
       final result = await _useCase.getAllPokemons(0, 6);

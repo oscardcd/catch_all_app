@@ -12,5 +12,6 @@ abstract class Ability with _$Ability {
     int? slot,
   }) = _Ability;
 
-  factory Ability.fromJson(Map<String, dynamic> json) => _$AbilityFromJson(json);
+  factory Ability.fromJson(Map<String, dynamic> json) =>
+      _$AbilityFromJson(json);
 }

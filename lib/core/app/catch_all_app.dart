@@ -12,6 +12,7 @@ class CatchAllApp extends StatelessWidget {
       theme: CATheme.light,
       darkTheme: CATheme.dark,
       themeMode: ThemeMode.system,
+      routerConfig: AppRouter.goRouter,
     );
   }
 }

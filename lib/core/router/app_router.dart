@@ -1,18 +1,22 @@
 import 'package:catch_all_app/ui/login/screens/login_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
-  const AppRouter._();
+  AppRouter._();
 
-  GoRouter goRouter(GoRouterRedirect? redirect) => GoRouter(
-        initialLocation: LoginScreen.route,
-        routes: [
-          GoRoute(
-            path: LoginScreen.route,
-            name: LoginScreen.name,
-            builder: LoginScreen.builder,
-          ),
-        ],
-        redirect: redirect,
-      );
+  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
+  static final GoRouter goRouter = GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: LoginScreen.route,
+    debugLogDiagnostics: true,
+    routes: [
+      GoRoute(
+        path: LoginScreen.route,
+        name: LoginScreen.name,
+        builder: LoginScreen.builder,
+      ),
+    ],
+  );
 }

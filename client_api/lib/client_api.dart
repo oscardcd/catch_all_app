@@ -1,3 +1,4 @@
-export 'package:client_api/client_api.dart';
-export 'api/request.dart';
-export 'api/model/api_result.dart';
+export 'src/api_client.dart';
+export 'src/api_request.dart';
+export 'src/http_methods.dart';
+export 'src/models/api_result.dart';

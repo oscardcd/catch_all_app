@@ -1,4 +1,4 @@
-import 'package:client_api/api/http_methods.dart';
+import 'http_methods.dart';
 
 class ApiRequest {
   final String url;
@@ -7,12 +7,7 @@ class ApiRequest {
   final Map<String, dynamic>? headers;
   final dynamic body;
 
-  ApiRequest(
-      {required this.url,
-      required this.method,
-      this.query,
-      this.headers,
-      this.body});
+  ApiRequest({required this.url, required this.method, this.query, this.headers, this.body});
 
   factory ApiRequest.get(
     String url, {
@@ -33,12 +28,7 @@ class ApiRequest {
     Map<String, dynamic>? headers,
     dynamic body,
   }) {
-    return ApiRequest(
-        url: url,
-        method: HttpMethods.post,
-        headers: headers,
-        query: query,
-        body: body);
+    return ApiRequest(url: url, method: HttpMethods.post, headers: headers, query: query, body: body);
   }
 
   factory ApiRequest.put(
@@ -47,12 +37,7 @@ class ApiRequest {
     Map<String, dynamic>? headers,
     dynamic body,
   }) {
-    return ApiRequest(
-        url: url,
-        method: HttpMethods.put,
-        headers: headers,
-        query: query,
-        body: body);
+    return ApiRequest(url: url, method: HttpMethods.put, headers: headers, query: query, body: body);
   }
 
   factory ApiRequest.patch(
@@ -61,12 +46,7 @@ class ApiRequest {
     Map<String, dynamic>? headers,
     dynamic body,
   }) {
-    return ApiRequest(
-        url: url,
-        method: HttpMethods.patch,
-        headers: headers,
-        query: query,
-        body: body);
+    return ApiRequest(url: url, method: HttpMethods.patch, headers: headers, query: query, body: body);
   }
 
   factory ApiRequest.delete(

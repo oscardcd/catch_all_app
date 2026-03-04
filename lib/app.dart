@@ -1,5 +1,5 @@
-import 'package:catch_poke_app/presentation/pokemons/pages/pokemon_screen.dart';
-import 'package:catch_poke_app/presentation/pokemons/pokemon/pokemon_bloc.dart';
+import 'package:catch_all_app/ui/pokemons/screens/pokemon_detail_screen.dart';
+import 'package:catch_all_app/ui/pokemons/bloc/pokemon_bloc/pokemon_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -13,7 +13,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: BlocProvider(
         create: (context) => GetIt.I.get<PokemonBloc>()..add(const PokemonEvent.fetchPokemons()),
-        child: const PokemonScreen(),
+        child: const PokemonDetailScreen(),
       ),
     );
   }

@@ -12,7 +12,8 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: BlocProvider(
-        create: (context) => GetIt.I.get<PokemonBloc>()..add(const PokemonEvent.fetchPokemons()),
+        create: (context) =>
+            GetIt.I.get<PokemonBloc>()..add(const PokemonEvent.fetchPokemons()),
         child: const PokemonDetailScreen(),
       ),
     );

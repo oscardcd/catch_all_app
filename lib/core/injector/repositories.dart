@@ -1,14 +1,15 @@
-import 'package:catch_all_app/core/injector/services.dart';
+import 'package:catch_all_app/data/repositories/auth_repository_impl.dart';
+import 'package:catch_all_app/domain/repositories/auth_repository.dart';
+import 'package:get_it/get_it.dart';
 
 Future<void> injectRepositories() async {
-  // Register your repositories here as the app grows.
-  // Example:
-  // GetIt.I.registerLazySingleton<IAuthRepository>(
-  //   () => AuthRepository(Services.secureStorage),
-  // );
+  GetIt.I.registerLazySingleton<IAuthRepository>(
+    () => AuthRepositoryImpl(),
+  );
 }
 
 class Repositories {
   const Repositories._();
-  // Add repository getters here.
+
+  static IAuthRepository get auth => GetIt.I<IAuthRepository>();
 }

@@ -28,6 +28,7 @@ dependencies:
     path: local_storage
   google_fonts: ^8.0.2
   font_awesome_flutter: ^10.12.0
+  flex_color_scheme: ^8.4.0
 
 
 

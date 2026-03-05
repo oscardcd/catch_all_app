@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "375122364789",
+    "project_id": "catch-all-app",
+    "storage_bucket": "catch-all-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375122364789:android:a303f1e42ed99fdaceab3c",
+        "android_client_info": {
+          "package_name": "com.example.catch_poke_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOp62zT-BMWUVfmgJQQTZilxD8ULmudxQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

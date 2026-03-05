@@ -60,6 +60,7 @@ class Palette {
   static const success = Color(0xFF27AE60);
   static const warning = Color(0xFFFF8300);
   static const error = Color(0xFFFF4949);
+  static const pokemonRed = Color(0xFFFF4444);
 
   // Other colors
   static const lightBlue = Color(0xFFE8F7FF);

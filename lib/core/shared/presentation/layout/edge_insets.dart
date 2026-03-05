@@ -62,9 +62,11 @@ const edgeInsetsH8V12 = EdgeInsets.symmetric(horizontal: 8, vertical: 12);
 const edgeInsetsH12V4 = EdgeInsets.symmetric(horizontal: 12, vertical: 4);
 const edgeInsetsH16V4 = EdgeInsets.symmetric(horizontal: 16, vertical: 4);
 const edgeInsetsH60V20 = EdgeInsets.symmetric(horizontal: 60, vertical: 20);
+const edgeInsetsH8V2 = EdgeInsets.symmetric(horizontal: 8, vertical: 2);
 
 const edgeInsetsL2 = EdgeInsets.only(left: 2);
 const edgeInsetsL6 = EdgeInsets.only(left: 6);
+const edgeInsetsL20B12 = EdgeInsets.only(left: 20, bottom: 12);
 
 const edgeInsetsT8 = EdgeInsets.only(top: 8);
 const edgeInsetsT16 = EdgeInsets.only(top: 16);

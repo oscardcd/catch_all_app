@@ -67,59 +67,57 @@ class _HomeView extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
       child: Row(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Catch \'em all!',
-                style: GoogleFonts.outfit(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: theme.textTheme.headlineLarge?.color,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              Text(
-                'Descubrelos!',
-                style: GoogleFonts.outfit(
-                  fontSize: 13,
-                  color: theme.textTheme.headlineLarge?.color,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
+          FutureBuilder(
+            future: Repositories.auth.getCurrentUser(),
+            builder: (context, snapshot) {
+              final user = snapshot.data;
+              final name = user?.displayName ?? 'Entrenador';
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '¡Hola, $name!',
+                    style: GoogleFonts.outfit(
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.surface,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  Text(
+                    '¿A quién atraparemos hoy?',
+                    style: GoogleFonts.outfit(
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
           const Spacer(),
-          GestureDetector(
-            onTap: () => _showSettingsMenu(context),
-            child: const PokeBallIcon(),
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            onPressed: () => context.go('/login'),
-            icon: const Icon(Icons.logout_rounded, color: Colors.white54),
-          ),
+          GestureDetector(onTap: () => _showSettingsMenu(context), child: const PokeBallIcon()),
         ],
       ),
     );
   }
 
   void _showSettingsMenu(BuildContext context) {
+    final theme = Theme.of(context);
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF161B22),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      backgroundColor: theme.canvasColor,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (_) {
         return BlocBuilder<ThemeCubit, ThemeMode>(
           builder: (context, currentMode) {
+            final isDark = theme.brightness == Brightness.dark;
             return SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -131,7 +129,7 @@ class _HomeView extends StatelessWidget {
                       style: GoogleFonts.outfit(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: isDark ? Colors.white : Colors.black87,
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -156,6 +154,20 @@ class _HomeView extends StatelessWidget {
                       ThemeMode.system,
                       currentMode == ThemeMode.system,
                     ),
+                    const Padding(padding: EdgeInsets.symmetric(vertical: 8.0), child: Divider()),
+                    ListTile(
+                      leading: const Icon(Icons.logout_rounded, color: Colors.redAccent),
+                      title: Text(
+                        'Cerrar Sesión',
+                        style: GoogleFonts.outfit(color: Colors.redAccent, fontWeight: FontWeight.w600),
+                      ),
+                      onTap: () async {
+                        await Repositories.auth.signOut();
+                        if (context.mounted) {
+                          context.go('/login');
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -166,26 +178,21 @@ class _HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildThemeOption(
-    BuildContext context,
-    String label,
-    IconData icon,
-    ThemeMode mode,
-    bool isSelected,
-  ) {
+  Widget _buildThemeOption(BuildContext context, String label, IconData icon, ThemeMode mode, bool isSelected) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final activeColor = theme.colorScheme.primary;
+
     return ListTile(
-      leading: Icon(
-        icon,
-        color: isSelected ? const Color(0xFFFF4444) : Colors.white54,
-      ),
+      leading: Icon(icon, color: isSelected ? activeColor : (isDark ? Colors.white54 : Colors.black54)),
       title: Text(
         label,
         style: GoogleFonts.outfit(
-          color: isSelected ? Colors.white : Colors.white54,
+          color: isSelected ? (isDark ? Colors.white : Colors.black) : (isDark ? Colors.white54 : Colors.black54),
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         ),
       ),
-      trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: Color(0xFFFF4444)) : null,
+      trailing: isSelected ? Icon(Icons.check_circle_rounded, color: activeColor) : null,
       onTap: () {
         context.read<ThemeCubit>().updateTheme(mode);
         Navigator.pop(context);
@@ -249,6 +256,8 @@ class _HomeContent extends StatelessWidget {
   }
 
   Widget _buildSectionDivider(BuildContext context, int favCount) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
@@ -258,7 +267,7 @@ class _HomeContent extends StatelessWidget {
             style: GoogleFonts.outfit(
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: Colors.white,
+              color: isDark ? Colors.white : Colors.black87,
             ),
           ),
           const SizedBox(width: 8),
@@ -266,28 +275,25 @@ class _HomeContent extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFD700).withOpacity(0.2),
+                color: const Color(0xFFFFD700).withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: const Color(0xFFFFD700).withOpacity(0.5),
-                ),
+                border: Border.all(color: const Color(0xFFFFD700).withValues(alpha: 0.5)),
               ),
               child: Text(
                 '$favCount',
-                style: GoogleFonts.outfit(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFFFFD700),
-                ),
+                style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, color: const Color(0xFFFFD700)),
               ),
             ),
           const Spacer(),
           Container(
             height: 1,
             width: 60,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFFFF4444), Colors.transparent],
+                colors: [
+                  isDark ? const Color(0xFFFF4444) : Palette.primaryLight.withValues(alpha: 0.3),
+                  Colors.transparent,
+                ],
               ),
             ),
           ),
@@ -303,6 +309,9 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -316,14 +325,14 @@ class _ErrorView extends StatelessWidget {
               style: GoogleFonts.outfit(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
+                color: isDark ? Colors.white : Colors.black87,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(color: Colors.white38, fontSize: 13),
+              style: GoogleFonts.outfit(color: isDark ? Colors.white38 : Colors.black38, fontSize: 13),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
@@ -331,10 +340,7 @@ class _ErrorView extends StatelessWidget {
                 context.read<HomeBloc>().add(const HomeEvent.loadInitialPokemons());
               },
               icon: const Icon(Icons.refresh),
-              label: Text(
-                'Reintentar',
-                style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
-              ),
+              label: Text('Reintentar', style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF4444),
                 foregroundColor: Colors.white,

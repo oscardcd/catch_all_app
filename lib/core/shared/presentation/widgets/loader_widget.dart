@@ -6,6 +6,8 @@ class LoaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -15,35 +17,36 @@ class LoaderWidget extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFF4444), Color(0xFF880000)],
+              gradient: LinearGradient(
+                colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFFF4444).withOpacity(0.4),
-                  blurRadius: 24,
-                  spreadRadius: 4,
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                  blurRadius: 20,
+                  spreadRadius: 2,
                 ),
               ],
             ),
             child: const Icon(Icons.catching_pokemon, color: Colors.white, size: 40),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           Text(
-            'Cargando Pokémons...',
+            'Cargando...',
             style: GoogleFonts.outfit(
-              color: Colors.white54,
+              color: isDark ? Colors.white54 : Colors.black54,
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 12),
-          const SizedBox(
-            width: 120,
+          const SizedBox(height: 16),
+          SizedBox(
+            width: 140,
             child: LinearProgressIndicator(
-              backgroundColor: Color(0xFF1E2533),
-              color: Color(0xFFFF4444),
-              borderRadius: BorderRadius.all(Radius.circular(4)),
+              backgroundColor: isDark ? Colors.white10 : Colors.black12,
+              color: const Color(0xFFFF4444),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
           ),
         ],

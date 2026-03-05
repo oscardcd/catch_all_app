@@ -8,22 +8,16 @@ class CATheme {
   static const FlexSchemeData _skFlexSchemeData = FlexSchemeData(
     name: 'Catch All App Theme',
     description: 'Catch All App Theme with custom primary and secondary colors',
-    light: FlexSchemeColor(
-      primary: Palette.primaryLight,
-      secondary: Palette.secondaryLight,
-    ),
-    dark: FlexSchemeColor(
-      primary: Palette.primaryDark,
-      secondary: Palette.secondaryDark,
-    ),
+    light: FlexSchemeColor(primary: Palette.primaryLight, secondary: Palette.secondaryLight),
+    dark: FlexSchemeColor(primary: Palette.primaryDark, secondary: Palette.secondaryDark),
   );
 
-  static final light = FlexThemeData.light(
-    colors: _skFlexSchemeData.light,
-  ).copyWith(
-    scaffoldBackgroundColor: Palette.softBlue,
+  static final light = FlexThemeData.light(colors: _skFlexSchemeData.light).copyWith(
+    scaffoldBackgroundColor: Palette.bgLight,
     splashColor: Colors.transparent,
-    cardColor: Palette.pokemonRed.withValues(alpha: 0.5),
+    cardColor: Palette.pokemonRed,
+
+    textTheme: const TextTheme(bodyLarge: TextStyle(color: Palette.black)),
     colorScheme: const ColorScheme.light(
       surface: Palette.black,
       onSurface: Palette.white,
@@ -34,18 +28,14 @@ class CATheme {
     ),
   );
 
-  static final dark = FlexThemeData.dark(
-    colors: _skFlexSchemeData.dark,
-  ).copyWith(
+  static final dark = FlexThemeData.dark(colors: _skFlexSchemeData.dark).copyWith(
     scaffoldBackgroundColor: const Color(0xFF0D1117),
     highlightColor: Colors.transparent,
     splashColor: Colors.transparent,
-    cardColor: Palette.secondaryDark.withValues(alpha: 0.5),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Palette.black),
-    ),
+    cardColor: Palette.secondaryDark,
+    textTheme: const TextTheme(bodyLarge: TextStyle(color: Palette.white)),
     colorScheme: const ColorScheme.dark(
-      surface: Color(0xFF161B22),
+      surface: Palette.white,
       onSurface: Palette.white,
       primary: Palette.primaryDark,
       secondary: Palette.secondaryDark,

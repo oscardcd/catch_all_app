@@ -16,16 +16,9 @@ class AuthServiceImpl implements AuthService {
         _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
 
   Future<(User, String)> _authenticateWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.authenticate();
+    final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
 
-    if (googleUser == null) {
-      throw FirebaseAuthException(
-        code: 'ERROR_ABORTED_BY_USER',
-        message: 'Google sign in aborted',
-      );
-    }
-
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.idToken,

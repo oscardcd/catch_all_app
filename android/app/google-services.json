@@ -1,40 +1,76 @@
 {
   "project_info": {
-    "project_number": "375122364789",
-    "project_id": "catch-all-app",
-    "storage_bucket": "catch-all-app.firebasestorage.app"
+    "project_number": "939510992335",
+    "project_id": "try-catch-all",
+    "storage_bucket": "try-catch-all.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:375122364789:android:a303f1e42ed99fdaceab3c",
+        "mobilesdk_app_id": "1:939510992335:android:167f3cccaffe3e83f2d6ba",
         "android_client_info": {
           "package_name": "com.example.catch_poke_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "375122364789-1qec9cu66of6hskeapmvu4ash9pdg82g.apps.googleusercontent.com",
+          "client_id": "939510992335-a4sdv17sj9skt3274nbnq0pkrsfkq8s9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCOp62zT-BMWUVfmgJQQTZilxD8ULmudxQ"
+          "current_key": "AIzaSyCBrV8RokHHCPxI7m1LYYGJKzraFAgReXw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "375122364789-1qec9cu66of6hskeapmvu4ash9pdg82g.apps.googleusercontent.com",
+              "client_id": "939510992335-a4sdv17sj9skt3274nbnq0pkrsfkq8s9.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "375122364789-81fn54nl422g7kgcmlpkostdu9om4fdf.apps.googleusercontent.com",
+              "client_id": "939510992335-4g2h7qsr52465vm0ar52qifbhin6aofe.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.catchPokeApp"
+                "bundle_id": "com.example.catchAllApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939510992335:android:a89bb858813e0ebff2d6ba",
+        "android_client_info": {
+          "package_name": "com.racso.catch_all"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "939510992335-a4sdv17sj9skt3274nbnq0pkrsfkq8s9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBrV8RokHHCPxI7m1LYYGJKzraFAgReXw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "939510992335-a4sdv17sj9skt3274nbnq0pkrsfkq8s9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "939510992335-4g2h7qsr52465vm0ar52qifbhin6aofe.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.catchAllApp"
               }
             }
           ]

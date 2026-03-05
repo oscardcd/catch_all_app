@@ -11,9 +11,13 @@ Future<void> bootstrap() async {
   // Initialize Local Storage via Hive
   await LocalStorage.instance.init();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } on Exception catch (e) {
+    print(e);
+  }
 
   await configureDependencies();
   runApp(const CatchAllApp());

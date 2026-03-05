@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.catch_poke_app">
    <application
-        android:label="catch_poke_app"
+        android:label="Catch All"
+
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

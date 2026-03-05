@@ -9,7 +9,7 @@ Future<void> injectServices() async {
   GetIt.I.registerLazySingleton<LocalStorage>(() => LocalStorage.instance);
   GetIt.I.registerLazySingleton<AuthService>(() => AuthServiceImpl(
         firebaseAuth: FirebaseAuth.instance,
-        googleSignIn: GoogleSignIn.standard(),
+        googleSignIn: GoogleSignIn.instance,
       ));
 }
 

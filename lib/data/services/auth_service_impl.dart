@@ -13,10 +13,10 @@ class AuthServiceImpl implements AuthService {
     FirebaseAuth? firebaseAuth,
     GoogleSignIn? googleSignIn,
   })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn();
+        _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
 
   Future<(User, String)> _authenticateWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAccount? googleUser = await _googleSignIn.authenticate();
 
     if (googleUser == null) {
       throw FirebaseAuthException(
@@ -28,7 +28,7 @@ class AuthServiceImpl implements AuthService {
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
+      accessToken: googleAuth.idToken,
       idToken: googleAuth.idToken,
     );
 

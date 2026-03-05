@@ -21,30 +21,35 @@ class CATheme {
   static final light = FlexThemeData.light(
     colors: _skFlexSchemeData.light,
   ).copyWith(
+    scaffoldBackgroundColor: Palette.softBlue,
     splashColor: Colors.transparent,
-    cardColor: Palette.white,
+    cardColor: Palette.pokemonRed.withValues(alpha: 0.5),
     colorScheme: const ColorScheme.light(
-      surface: Palette.primaryLight,
-      onSurface: Palette.gray,
+      surface: Palette.black,
+      onSurface: Palette.white,
       primary: Palette.primaryLight,
       secondary: Palette.secondaryLight,
       primaryContainer: Palette.primaryLight,
       tertiary: Palette.cyan,
     ),
-    // iconTheme: const IconThemeData(color: Palette.white),
   );
 
   static final dark = FlexThemeData.dark(
     colors: _skFlexSchemeData.dark,
   ).copyWith(
+    scaffoldBackgroundColor: const Color(0xFF0D1117),
     highlightColor: Colors.transparent,
     splashColor: Colors.transparent,
-    cardColor: Palette.white,
+    cardColor: Palette.secondaryDark.withValues(alpha: 0.5),
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: Palette.black),
+    ),
     colorScheme: const ColorScheme.dark(
+      surface: Color(0xFF161B22),
+      onSurface: Palette.white,
       primary: Palette.primaryDark,
       secondary: Palette.secondaryDark,
       onSecondary: Palette.white,
-      onSurface: Palette.onSurface,
     ),
     iconTheme: const IconThemeData(color: Palette.white),
   );

@@ -1,4 +1,4 @@
-import 'package:catch_all_app/ui/login/screens/login_screen.dart';
+import 'package:catch_all_app/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,6 +16,11 @@ class AppRouter {
         path: LoginScreen.route,
         name: LoginScreen.name,
         builder: LoginScreen.builder,
+      ),
+      GoRoute(
+        path: HomeScreen.route,
+        name: HomeScreen.name,
+        builder: HomeScreen.builder,
       ),
     ],
   );

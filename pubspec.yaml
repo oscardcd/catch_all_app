@@ -32,10 +32,9 @@ dependencies:
   go_router: ^14.1.4
   firebase_core: ^4.5.0
   firebase_auth: ^6.2.0
-  google_sign_in: 6.2.1
-  google_sign_in_android: 6.1.20
-  google_sign_in_ios: 5.7.4
-  google_sign_in_web: 0.12.4+2
+  google_sign_in: ^7.2.0
+  path_provider: ^2.1.5
+  
 
 
 

@@ -1,4 +1,4 @@
-import 'package:catch_all_app/ui/pokemons/bloc/pokemon_bloc/pokemon_bloc.dart';
+import 'package:catch_all_app/ui/pokemon_details/bloc/pokemon_bloc/pokemon_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -28,9 +28,7 @@ class PokemonDetailScreen extends StatelessWidget {
                           (index) => Wrap(
                                 children: [
                                   Column(
-                                    children: [
-                                      Text(pokemons[index].name ?? 'no name')
-                                    ],
+                                    children: [Text(pokemons[index].name ?? 'no name')],
                                   )
                                 ],
                               )),

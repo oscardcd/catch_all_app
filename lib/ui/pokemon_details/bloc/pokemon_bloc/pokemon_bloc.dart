@@ -2,27 +2,24 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:catch_all_app/domain/entities/pokemon.dart';
-import 'package:catch_all_app/domain/services/pokemon_service.dart';
+import 'package:catch_all_app/domain/repositories/pokemon_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:injectable/injectable.dart';
 
 part 'pokemon_state.dart';
 part 'pokemon_event.dart';
 part '../pokemon_bloc.freezed.dart';
 
-@injectable
 class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
-  PokemonBloc(this._useCase) : super(const PokemonState.initial()) {
+  PokemonBloc(this._pokemonRepository) : super(const PokemonState.initial()) {
     on<_FetchPokemon>(_fetchPokemonsToState);
   }
 
-  final PokemonUseCase _useCase;
+  final PokemonRepository _pokemonRepository;
 
-  FutureOr<void> _fetchPokemonsToState(
-      _FetchPokemon event, Emitter<PokemonState> emit) async {
+  FutureOr<void> _fetchPokemonsToState(_FetchPokemon event, Emitter<PokemonState> emit) async {
     emit(const PokemonState.loadInProgress());
     try {
-      final result = await _useCase.getAllPokemons(0, 6);
+      final result = await _pokemonRepository.getPokemons(6, 0);
 
       emit(PokemonState.pokemonsLoaded(result?.results ?? []));
     } on Exception catch (e) {

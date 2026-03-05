@@ -1,1 +1,1 @@
-export 'pokemon_bloc/pokemon_bloc.dart';
+export 'pokemon_cubit/pokemon_cubit.dart';

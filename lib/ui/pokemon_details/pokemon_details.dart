@@ -1,1 +1,2 @@
-export 'screens/pokemon_detail_screen.dart';
+export 'bloc/bloc.dart';
+export 'screens/screens.dart';

@@ -92,7 +92,7 @@ class AuthServiceImpl implements AuthService {
   Future<ApiResult<UserModel>> signInWithEmailAndPassword(String email, String password) async {
     await Future.delayed(const Duration(seconds: 1)); // Simulate a little delay
 
-    if (email == 'oscardcd' && password == '1234') {
+    if (email.contains('oscardcd') && password.contains('1234')) {
       return ApiResult.success(
         data: const UserModel(
           id: 'mock-local-uid',

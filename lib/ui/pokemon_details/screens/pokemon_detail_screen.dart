@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:catch_all_app/core/core.dart';
 import 'package:catch_all_app/core/injector/injector.dart';
 import 'package:catch_all_app/core/shared/presentation/theme/palette.dart';
 import 'package:catch_all_app/core/shared/presentation/widgets/loader_widget.dart';
@@ -21,7 +22,23 @@ class PokemonDetailScreen extends StatelessWidget {
     final name = state.pathParameters['name'] ?? 'unknown';
     return BlocProvider(
       create: (context) => PokemonCubit(Repositories.pokemonRepository)..fetchPokemonDetails(name),
-      child: PokemonDetailScreen(pokemonName: name),
+      child: BlocListener<PokemonCubit, PokemonState>(
+        listener: (context, state) {
+          state.maybeWhen(
+            orElse: () {},
+            pokemonLoaded: (pokemon) {
+              if (pokemon.id == null) {
+                context.go('/');
+              }
+            },
+            failure: (error) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+              context.go('/');
+            },
+          );
+        },
+        child: PokemonDetailScreen(pokemonName: name),
+      ),
     );
   }
 
@@ -29,9 +46,24 @@ class PokemonDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          pokemonName.toUpperCase(),
-          style: GoogleFonts.outfit(fontWeight: FontWeight.w700),
+        title: BlocSelector<PokemonCubit, PokemonState, Pokemon?>(
+          selector: (state) => state.pokemon,
+          builder: (context, pokemon) {
+            return Row(
+              children: [
+                Text(pokemonName.toUpperCase(), style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+                space4,
+                Text(
+                  '#${pokemon?.id.toString().padLeft(3, '0')}',
+                  style: GoogleFonts.outfit(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -39,11 +71,10 @@ class PokemonDetailScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: BlocBuilder<PokemonCubit, PokemonState>(
         builder: (context, state) {
-          return state.when(
-            initial: () => const Center(child: CircularProgressIndicator()),
+          return state.maybeWhen(
             loadInProgress: () => LoaderWidget(),
             pokemonLoaded: (pokemon) => _PokemonDetailView(pokemon: pokemon),
-            failure: (error) => Center(child: Text('Error: $error')),
+            orElse: () => const SizedBox.shrink(),
           );
         },
       ),
@@ -68,15 +99,12 @@ class _PokemonDetailView extends StatelessWidget {
       children: [
         // Background Gradient
         Container(
-          height: MediaQuery.of(context).size.height * 0.45,
+          height: MediaQuery.of(context).size.height * 0.5,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                typeColor,
-                typeColor.withValues(alpha: 0.8),
-              ],
+              colors: [typeColor, typeColor.withValues(alpha: 0.8)],
             ),
           ),
         ),
@@ -85,8 +113,7 @@ class _PokemonDetailView extends StatelessWidget {
         SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 100),
-
+              const SizedBox(height: 80),
               // Pokemon Image
               Center(
                 child: Hero(
@@ -101,23 +128,16 @@ class _PokemonDetailView extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              gap16,
 
               // White Card Section
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: isDark ? const Color(0xFF1A1D23) : Colors.white,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40),
-                  ),
+                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40)),
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 20,
-                      offset: const Offset(0, -10),
-                    ),
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, -10)),
                   ],
                 ),
                 child: Padding(
@@ -137,14 +157,6 @@ class _PokemonDetailView extends StatelessWidget {
                                 fontWeight: FontWeight.w900,
                                 color: isDark ? Colors.white : Colors.black87,
                               ),
-                            ),
-                          ),
-                          Text(
-                            '#${pokemon.id.toString().padLeft(3, '0')}',
-                            style: GoogleFonts.outfit(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                              color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.2),
                             ),
                           ),
                         ],
@@ -173,11 +185,7 @@ class _PokemonDetailView extends StatelessWidget {
                             ),
                             child: Text(
                               name.toUpperCase(),
-                              style: GoogleFonts.outfit(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 13,
-                              ),
+                              style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
                             ),
                           );
                         }).toList(),
@@ -189,12 +197,7 @@ class _PokemonDetailView extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          _buildInfoItem(
-                            context,
-                            '${(pokemon.height ?? 0) / 10} m',
-                            'HEIGHT',
-                            Icons.height,
-                          ),
+                          _buildInfoItem(context, '${(pokemon.height ?? 0) / 10} m', 'HEIGHT', Icons.height),
                           _buildInfoItem(
                             context,
                             '${(pokemon.weight ?? 0) / 10} kg',
@@ -207,18 +210,13 @@ class _PokemonDetailView extends StatelessWidget {
                       const SizedBox(height: 32),
 
                       // Abilities
-                      Text(
-                        'Abilities',
-                        style: GoogleFonts.outfit(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
+                      Text('Abilities', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800)),
                       const SizedBox(height: 12),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: pokemon.abilities?.map((a) {
+                        children:
+                            pokemon.abilities?.map((a) {
                               return Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                 decoration: BoxDecoration(
@@ -230,10 +228,7 @@ class _PokemonDetailView extends StatelessWidget {
                                 ),
                                 child: Text(
                                   (a.ability?.name ?? '').toUpperCase(),
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w600),
                                 ),
                               );
                             }).toList() ??
@@ -243,13 +238,7 @@ class _PokemonDetailView extends StatelessWidget {
                       const SizedBox(height: 40),
 
                       // Stats
-                      Text(
-                        'Base Stats',
-                        style: GoogleFonts.outfit(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
+                      Text('Base Stats', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800)),
                       const SizedBox(height: 24),
                       ...?pokemon.stats?.map((s) {
                         final statName = s.stat?.name ?? '';
@@ -272,10 +261,7 @@ class _PokemonDetailView extends StatelessWidget {
                                   ),
                                   Text(
                                     baseStat.toString(),
-                                    style: GoogleFonts.outfit(
-                                      fontWeight: FontWeight.w800,
-                                      color: typeColor,
-                                    ),
+                                    style: GoogleFonts.outfit(fontWeight: FontWeight.w800, color: typeColor),
                                   ),
                                 ],
                               ),
@@ -294,12 +280,7 @@ class _PokemonDetailView extends StatelessWidget {
                                     child: Container(
                                       height: 10,
                                       decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            typeColor.withValues(alpha: 0.6),
-                                            typeColor,
-                                          ],
-                                        ),
+                                        gradient: LinearGradient(colors: [typeColor.withValues(alpha: 0.6), typeColor]),
                                         borderRadius: BorderRadius.circular(5),
                                         boxShadow: [
                                           BoxShadow(

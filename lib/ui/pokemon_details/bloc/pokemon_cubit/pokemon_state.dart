@@ -7,3 +7,7 @@ class PokemonState with _$PokemonState {
   factory PokemonState.pokemonLoaded(Pokemon pokemon) = _PokemonLoaded;
   factory PokemonState.failure(String error) = _Failure;
 }
+
+extension PokemonStateX on PokemonState {
+  Pokemon? get pokemon => maybeWhen(pokemonLoaded: (pokemon) => pokemon, orElse: () => null);
+}

@@ -88,7 +88,7 @@ class _PokemonGridSectionState extends State<PokemonGridSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: edgeInsetsL20B12,
+          padding: edgeInsetsH16.add(edgeInsetsV12),
           child: Row(
             children: [
               Text(

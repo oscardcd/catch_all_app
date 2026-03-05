@@ -89,6 +89,26 @@ class AuthServiceImpl implements AuthService {
   }
 
   @override
+  Future<ApiResult<UserModel>> signInWithEmailAndPassword(String email, String password) async {
+    await Future.delayed(const Duration(seconds: 1)); // Simulate a little delay
+
+    if (email == 'oscardcd' && password == '1234') {
+      return ApiResult.success(
+        data: const UserModel(
+          id: 'mock-local-uid',
+          email: 'oscardcd@catchall.com',
+          displayName: 'Oscar Correa',
+          photoUrl: 'https://i.pravatar.cc/150?u=oscardcd',
+        ),
+      );
+    } else {
+      return ApiResult.failure(
+        error: Exception('Credenciales locales inválidas'),
+      );
+    }
+  }
+
+  @override
   User? get currentUser => _firebaseAuth.currentUser;
 
   @override

@@ -58,6 +58,21 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   @override
+  Future<UserModel> signInWithEmailAndPassword(String email, String password) async {
+    final result = await _authService.signInWithEmailAndPassword(email, password);
+
+    return result.when(
+      success: (userModel) async {
+        await _saveUserToLocal(userModel);
+        return userModel;
+      },
+      failure: (error) {
+        throw Exception(error.toString());
+      },
+    );
+  }
+
+  @override
   Future<UserModel?> getCurrentUser() async {
     try {
       final String? userJson = await _localStorage.get<String>(_userBox, _userKey);

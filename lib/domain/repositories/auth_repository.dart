@@ -7,6 +7,9 @@ abstract class IAuthRepository {
   /// Sign in with Firebase (Direct)
   Future<UserModel> signInWithFirebase();
 
+  /// Sign in with Email and Password
+  Future<UserModel> signInWithEmailAndPassword(String email, String password);
+
   /// Get current user if logged in
   Future<UserModel?> getCurrentUser();
 

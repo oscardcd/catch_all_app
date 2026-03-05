@@ -22,15 +22,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   FutureOr<void> _onSubmitLogin(_SubmitLogin event, Emitter<LoginState> emit) async {
     emit(const LoginState.loadInProgress());
     try {
-      // Simulate network request
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Basic mock validation
-      if (event.username.isNotEmpty && event.password.isNotEmpty) {
-        emit(const LoginState.loginSuccess());
-      } else {
-        emit(const LoginState.failure('Credenciales inválidas'));
-      }
+      await _authRepository.signInWithEmailAndPassword(event.username, event.password);
+      emit(const LoginState.loginSuccess());
     } on Exception catch (e) {
       emit(LoginState.failure(e.toString()));
     }

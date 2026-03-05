@@ -5,27 +5,7 @@ import 'package:catch_all_app/ui/home/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Pokemon type color mapping
-const Map<String, Color> pokemonTypeColors = {
-  'fire': Color(0xFFFF6B35),
-  'water': Color(0xFF4FC3F7),
-  'grass': Color(0xFF81C784),
-  'electric': Color(0xFFFFD54F),
-  'psychic': Color(0xFFF06292),
-  'ice': Color(0xFF80DEEA),
-  'dragon': Color(0xFF7986CB),
-  'dark': Color(0xFF78909C),
-  'fairy': Color(0xFFF48FB1),
-  'fighting': Color(0xFFFF8A65),
-  'poison': Color(0xFFBA68C8),
-  'ground': Color(0xFFFFB74D),
-  'flying': Color(0xFF90CAF9),
-  'bug': Color(0xFFAED581),
-  'rock': Color(0xFFBCAAA4),
-  'ghost': Color(0xFF7E57C2),
-  'steel': Color(0xFF90A4AE),
-  'normal': Color(0xFFBDBDBD),
-};
+// Pokemon type color mapping is now centrally managed in Palette.pokemonTypeColors
 
 /// A horizontal scrolling grid with 2 rows, up to 6 pokémon per "column-page".
 class PokemonGridSection extends StatefulWidget {
@@ -96,17 +76,17 @@ class _PokemonGridSectionState extends State<PokemonGridSection> {
                 style: GoogleFonts.outfit(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.headlineLarge?.color,
                 ),
               ),
               space8,
               Container(
                 padding: edgeInsetsH8V2,
                 decoration: BoxDecoration(
-                  color: Palette.pokemonRed.withOpacity(0.15),
+                  color: Palette.pokemonRed.withValues(alpha: 0.15),
                   borderRadius: borderRadius10,
                   border: Border.all(
-                    color: Palette.pokemonRed.withOpacity(0.4),
+                    color: Palette.pokemonRed.withValues(alpha: 0.4),
                   ),
                 ),
                 child: Text(
@@ -213,22 +193,8 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
     super.dispose();
   }
 
-  Color _getCardColor() {
-    final colors = [
-      const Color(0xFF1A1F35),
-      const Color(0xFF1A2535),
-      const Color(0xFF1F1A35),
-      const Color(0xFF1A2820),
-      const Color(0xFF2B1A1A),
-      const Color(0xFF1A2B2B),
-    ];
-    return colors[widget.pokemon.id % colors.length];
-  }
-
   @override
   Widget build(BuildContext context) {
-    final cardColor = _getCardColor();
-
     return AnimatedBuilder(
       animation: _scaleAnim,
       builder: (context, child) {
@@ -250,16 +216,20 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
           height: 82,
           margin: edgeInsets4,
           decoration: BoxDecoration(
-            color: cardColor,
+            color: Theme.of(context).cardColor,
             borderRadius: borderRadius16,
             border: Border.all(
-              color: widget.isFavorite ? const Color(0xFFFFD700).withOpacity(0.6) : Colors.white.withOpacity(0.05),
+              color: widget.isFavorite
+                  ? const Color(0xFFFFD700).withValues(alpha: 0.6)
+                  : (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : Colors.black.withValues(alpha: 0.05)),
               width: widget.isFavorite ? 1.5 : 1,
             ),
             boxShadow: widget.isFavorite
                 ? [
                     BoxShadow(
-                      color: const Color(0xFFFFD700).withOpacity(0.2),
+                      color: const Color(0xFFFFD700).withValues(alpha: 0.2),
                       blurRadius: 8,
                       spreadRadius: 1,
                     )

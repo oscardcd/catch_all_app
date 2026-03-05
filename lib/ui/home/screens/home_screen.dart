@@ -1,6 +1,5 @@
 import 'package:catch_all_app/core/core.dart';
-import 'package:catch_all_app/core/injector/repositories.dart';
-
+import 'package:catch_all_app/domain/entities/pokemon.dart';
 import 'package:catch_all_app/ui/home/bloc/home_bloc.dart';
 import 'package:catch_all_app/ui/home/widgets/pokemon_grid_section.dart';
 import 'package:catch_all_app/ui/home/widgets/favorites_carousel_section.dart';
@@ -34,7 +33,6 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1117),
       body: SafeArea(
         child: Column(
           children: [
@@ -70,6 +68,8 @@ class _HomeView extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
@@ -82,7 +82,7 @@ class _HomeView extends StatelessWidget {
                 style: GoogleFonts.outfit(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
+                  color: theme.textTheme.headlineLarge?.color,
                   letterSpacing: -0.5,
                 ),
               ),
@@ -90,7 +90,7 @@ class _HomeView extends StatelessWidget {
                 'Descubrelos!',
                 style: GoogleFonts.outfit(
                   fontSize: 13,
-                  color: Colors.white38,
+                  color: theme.textTheme.headlineLarge?.color,
                   fontWeight: FontWeight.w400,
                 ),
               ),

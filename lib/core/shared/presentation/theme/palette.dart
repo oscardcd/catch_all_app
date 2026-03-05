@@ -49,7 +49,6 @@ class Palette {
   static const primaryDark = Color(0xFF4E8DF5);
   static const secondaryDark = Color(0xFF27AE60);
   static const buttonsDark = Color(0xFFE5E5EA);
-  static const onSurface = Color(0xFF3A3D41);
 
 //Commons
 
@@ -77,4 +76,25 @@ class Palette {
         buttonsLight,
         secondaryDark.withAlpha(200),
       ];
+
+  static const Map<String, Color> pokemonTypeColors = {
+    'fire': Color(0xFFFF6B35),
+    'water': Color(0xFF4FC3F7),
+    'grass': Color(0xFF81C784),
+    'electric': Color(0xFFFFD54F),
+    'psychic': Color(0xFFF06292),
+    'ice': Color(0xFF80DEEA),
+    'dragon': Color(0xFF7986CB),
+    'dark': Color(0xFF78909C),
+    'fairy': Color(0xFFF48FB1),
+    'fighting': Color(0xFFFF8A65),
+    'poison': Color(0xFFBA68C8),
+    'ground': Color(0xFFFFB74D),
+    'flying': Color(0xFF90CAF9),
+    'bug': Color(0xFFAED581),
+    'rock': Color(0xFFBCAAA4),
+    'ghost': Color(0xFF7E57C2),
+    'steel': Color(0xFF90A4AE),
+    'normal': Color(0xFFBDBDBD),
+  };
 }

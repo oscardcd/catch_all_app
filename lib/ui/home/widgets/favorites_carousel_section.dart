@@ -1,14 +1,11 @@
+import 'package:catch_all_app/core/core.dart';
 import 'package:catch_all_app/ui/home/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// A snapping horizontal carousel that highlights the center item.
 class FavoritesCarouselSection extends StatefulWidget {
-  const FavoritesCarouselSection({
-    super.key,
-    required this.favorites,
-    required this.onFavoriteToggle,
-  });
+  const FavoritesCarouselSection({super.key, required this.favorites, required this.onFavoriteToggle});
 
   final List<PokemonEntry> favorites;
   final ValueChanged<int> onFavoriteToggle;
@@ -42,11 +39,7 @@ class _FavoritesCarouselSectionState extends State<FavoritesCarouselSection> {
         _currentPage >= widget.favorites.length &&
         widget.favorites.isNotEmpty) {
       final newPage = (widget.favorites.length - 1).clamp(0, 999);
-      _pageController.animateToPage(
-        newPage,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      _pageController.animateToPage(newPage, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
     }
   }
 
@@ -108,8 +101,9 @@ class _FavoritesCarouselSectionState extends State<FavoritesCarouselSection> {
             height: 6,
             margin: const EdgeInsets.symmetric(horizontal: 2),
             decoration: BoxDecoration(
-              color:
-                  isActive ? const Color(0xFFFFD700) : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+              color: isActive
+                  ? const Color(0xFFFFD700)
+                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(3),
             ),
           );
@@ -119,23 +113,22 @@ class _FavoritesCarouselSectionState extends State<FavoritesCarouselSection> {
   }
 
   Widget _buildEmptyState() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.star_outline_rounded,
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15),
-            size: 36,
-          ),
-          const SizedBox(height: 8),
+          Icon(Icons.auto_awesome_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.15), size: 48),
+          const SizedBox(height: 12),
           Text(
             'Mantén presionado un Pokémon\npara añadirlo a favoritos',
             textAlign: TextAlign.center,
             style: GoogleFonts.outfit(
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
               height: 1.5,
+              color: isDark ? Colors.white54 : Colors.black45,
             ),
           ),
         ],
@@ -145,11 +138,7 @@ class _FavoritesCarouselSectionState extends State<FavoritesCarouselSection> {
 }
 
 class _FavoriteCarouselCard extends StatelessWidget {
-  const _FavoriteCarouselCard({
-    required this.pokemon,
-    required this.isActive,
-    required this.onRemove,
-  });
+  const _FavoriteCarouselCard({required this.pokemon, required this.isActive, required this.onRemove});
 
   final PokemonEntry pokemon;
   final bool isActive;
@@ -157,40 +146,26 @@ class _FavoriteCarouselCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
       decoration: BoxDecoration(
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(24),
-        gradient: isActive
-            ? LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isDark
-                    ? [const Color(0xFF2C1F3E), const Color(0xFF1A1030)]
-                    : [const Color(0xFFE8F0FE), const Color(0xFFD2E3FC)],
-              )
-            : LinearGradient(
-                colors: isDark
-                    ? [const Color(0xFF161B27), const Color(0xFF0F1319)]
-                    : [const Color(0xFFF8F9FA), const Color(0xFFF1F3F4)],
-              ),
         border: Border.all(
           color: isActive
-              ? const Color(0xFFFFD700).withValues(alpha: 0.5)
-              : (isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.06)),
-          width: isActive ? 1.5 : 1,
+              ? const Color(0xFFFFD700).withValues(alpha: 0.8)
+              : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06)),
+          width: isActive ? 2.0 : 1.0,
         ),
-        boxShadow: isActive
-            ? [
-                BoxShadow(
-                  color: const Color(0xFFFFD700).withValues(alpha: isActive ? 0.3 : 0.15),
-                  blurRadius: 20,
-                  spreadRadius: 2,
-                ),
-              ]
-            : [],
+        boxShadow: [
+          if (isActive)
+            BoxShadow(color: const Color(0xFFFFD700).withValues(alpha: 0.3), blurRadius: 15, spreadRadius: 1)
+          else
+            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2)),
+        ],
       ),
       child: Stack(
         children: [
@@ -200,11 +175,7 @@ class _FavoriteCarouselCard extends StatelessWidget {
             bottom: -10,
             child: Opacity(
               opacity: 0.06,
-              child: Icon(
-                Icons.catching_pokemon,
-                size: 80,
-                color: isActive ? const Color(0xFFFFD700) : Colors.white,
-              ),
+              child: Icon(Icons.catching_pokemon, size: 80, color: isActive ? const Color(0xFFFFD700) : Colors.white),
             ),
           ),
           // Content
@@ -239,15 +210,8 @@ class _FavoriteCarouselCard extends StatelessWidget {
                       child: Container(
                         width: 26,
                         height: 26,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.06),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.star_rounded,
-                          color: Color(0xFFFFD700),
-                          size: 14,
-                        ),
+                        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.06), shape: BoxShape.circle),
+                        child: const Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 14),
                       ),
                     ),
                   ],
@@ -258,11 +222,7 @@ class _FavoriteCarouselCard extends StatelessWidget {
                     child: Image.network(
                       pokemon.spriteUrl,
                       fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => const Icon(
-                        Icons.catching_pokemon,
-                        color: Colors.white24,
-                        size: 50,
-                      ),
+                      errorBuilder: (_, __, ___) => const Icon(Icons.catching_pokemon, color: Colors.white24, size: 50),
                     ),
                   ),
                 ),
@@ -270,9 +230,11 @@ class _FavoriteCarouselCard extends StatelessWidget {
                 Text(
                   _capitalize(pokemon.name),
                   style: GoogleFonts.outfit(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: isActive ? Colors.white : Colors.white54,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: isActive
+                        ? (isDark ? Colors.white : Palette.primaryLight)
+                        : (isDark ? Colors.white54 : Colors.black54),
                   ),
                 ),
               ],

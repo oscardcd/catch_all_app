@@ -1,4 +1,4 @@
-package com.example.catch_poke_app
+package com.racso.catch_all
 
 import io.flutter.embedding.android.FlutterActivity
 

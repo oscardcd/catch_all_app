@@ -1,69 +1,75 @@
 import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:catch_all_app/domain/services/auth_service.dart';
 import 'package:catch_all_app/domain/repositories/auth_repository.dart';
 import 'package:catch_all_app/domain/models/user_model.dart';
+import 'package:client_api/client_api.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:local_storage/local_storage.dart';
-import 'package:injectable/injectable.dart';
 
-@Injectable(as: IAuthRepository)
 class AuthRepositoryImpl implements IAuthRepository {
-  final FirebaseAuth _firebaseAuth;
-  final GoogleSignIn _googleSignIn;
+  final AuthService _authService;
   final LocalStorage _localStorage;
 
   static const String _userBox = 'user_box';
   static const String _userKey = 'current_user';
 
   AuthRepositoryImpl({
-    FirebaseAuth? firebaseAuth,
-    GoogleSignIn? googleSignIn,
+    required AuthService authService,
     LocalStorage? localStorage,
-  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn(),
+  })  : _authService = authService,
         _localStorage = localStorage ?? LocalStorage.instance;
-
-  @factoryMethod
-  static AuthRepositoryImpl create() => AuthRepositoryImpl();
 
   @override
   Future<UserModel> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    final result = await _authService.signInWithGoogle();
 
-    if (googleUser == null) {
-      throw Exception('Google sign in aborted');
-    }
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-    // Create a new credential
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
+    return result.when(
+      success: (userModel) async {
+        // Save user info to local storage on success
+        await _saveUserToLocal(userModel);
+        return userModel;
+      },
+      failure: (error) {
+        if (error is FirebaseAuthException) {
+          throw _handleAuthError(error);
+        }
+        throw Exception('An unexpected authentication error occurred: $error');
+      },
     );
+  }
 
-    // Sign in to Firebase with the credential
-    final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+  @override
+  Future<UserModel> signInWithFirebase() async {
+    final result = await _authService.signInWithFirebase();
 
-    final User? firebaseUser = userCredential.user;
-
-    if (firebaseUser == null) {
-      throw Exception('Failed to sign in to Firebase');
-    }
-
-    final userModel = UserModel(
-      id: firebaseUser.uid,
-      email: firebaseUser.email,
-      displayName: firebaseUser.displayName,
-      photoUrl: firebaseUser.photoURL,
+    return result.when(
+      success: (userModel) async {
+        // Save user info to local storage on success
+        await _saveUserToLocal(userModel);
+        return userModel;
+      },
+      failure: (error) {
+        if (error is FirebaseAuthException) {
+          throw _handleAuthError(error);
+        }
+        throw Exception('An unexpected authentication error occurred: $error');
+      },
     );
+  }
 
-    // Save user info to local storage
-    await _saveUserToLocal(userModel);
+  @override
+  Future<UserModel> signInWithEmailAndPassword(String email, String password) async {
+    final result = await _authService.signInWithEmailAndPassword(email, password);
 
-    return userModel;
+    return result.when(
+      success: (userModel) async {
+        await _saveUserToLocal(userModel);
+        return userModel;
+      },
+      failure: (error) {
+        throw Exception(error.toString());
+      },
+    );
   }
 
   @override
@@ -74,10 +80,10 @@ class AuthRepositoryImpl implements IAuthRepository {
         return UserModel.fromJson(jsonDecode(userJson));
       }
     } catch (e) {
-      // Ignored: fallback to Firebase
+      // Ignored: fallback to AuthService
     }
 
-    final firebaseUser = _firebaseAuth.currentUser;
+    final firebaseUser = _authService.currentUser;
     if (firebaseUser != null) {
       return UserModel(
         id: firebaseUser.uid,
@@ -91,13 +97,25 @@ class AuthRepositoryImpl implements IAuthRepository {
 
   @override
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
-    await _firebaseAuth.signOut();
+    await _authService.signOut();
     await _localStorage.delete(_userBox, _userKey);
   }
 
   Future<void> _saveUserToLocal(UserModel user) async {
     final userJson = jsonEncode(user.toJson());
     await _localStorage.put<String>(_userBox, _userKey, userJson);
+  }
+
+  Exception _handleAuthError(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'ERROR_ABORTED_BY_USER':
+        return Exception('Inicio de sesión cancelado por el usuario');
+      case 'network-request-failed':
+        return Exception('Error de red. Verifica tu conexión');
+      case 'invalid-credential':
+        return Exception('Credenciales inválidas');
+      default:
+        return Exception('Error de autenticación: ${e.message}');
+    }
   }
 }

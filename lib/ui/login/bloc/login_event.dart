@@ -8,4 +8,5 @@ class LoginEvent with _$LoginEvent {
   }) = _SubmitLogin;
 
   const factory LoginEvent.submitGoogleLogin() = _SubmitGoogleLogin;
+  const factory LoginEvent.submitFirebaseLogin() = _SubmitFirebaseLogin;
 }

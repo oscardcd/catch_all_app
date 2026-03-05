@@ -1,5 +1,5 @@
-import 'package:catch_all_app/data/services/endpoints.dart';
-import 'package:catch_all_app/data/services/interceptors/api_key_interceptor.dart';
+import 'package:catch_all_app/data/interceptors/api_key_interceptor.dart';
+import 'package:catch_all_app/data/endpoints/endpoints.dart';
 import 'package:catch_all_app/domain/entities/all_pokemons.dart';
 import 'package:catch_all_app/domain/entities/pokemon.dart';
 import 'package:catch_all_app/data/services/pokemon_remote_data_source.dart';
@@ -9,9 +9,7 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 @Injectable(as: PokemonRemoteDataSource)
 class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
-  static const Map<String, Object> _defaultHeaders = {
-    'content-Type': 'application/json'
-  };
+  static const Map<String, Object> _defaultHeaders = {'content-Type': 'application/json'};
   static const _baseUrl = 'https://pokeapi.co/api/v2/';
 
   void init() {
@@ -23,8 +21,7 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
   }
 
   @override
-  Future<ApiResult<AllPokemons?>> getAllPokemons(
-      int offSet, int limitPokemons) {
+  Future<ApiResult<AllPokemons?>> getAllPokemons(int offSet, int limitPokemons) {
     init();
     return ApiClient.instance.request(
       ApiRequest.get(PokemonsEndpoints.allByPages(offSet, limitPokemons)),

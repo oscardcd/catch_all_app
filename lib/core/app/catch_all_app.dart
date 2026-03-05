@@ -7,7 +7,7 @@ class CatchAllApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Catch All App',
+      title: 'Catch All',
       debugShowCheckedModeBanner: false,
       theme: CATheme.light,
       darkTheme: CATheme.dark,

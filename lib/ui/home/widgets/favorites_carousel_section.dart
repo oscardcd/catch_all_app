@@ -108,7 +108,8 @@ class _FavoritesCarouselSectionState extends State<FavoritesCarouselSection> {
             height: 6,
             margin: const EdgeInsets.symmetric(horizontal: 2),
             decoration: BoxDecoration(
-              color: isActive ? const Color(0xFFFFD700) : Colors.white.withOpacity(0.2),
+              color:
+                  isActive ? const Color(0xFFFFD700) : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(3),
             ),
           );
@@ -118,13 +119,14 @@ class _FavoritesCarouselSectionState extends State<FavoritesCarouselSection> {
   }
 
   Widget _buildEmptyState() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.star_outline_rounded,
-            color: Colors.white.withOpacity(0.15),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15),
             size: 36,
           ),
           const SizedBox(height: 8),
@@ -132,8 +134,6 @@ class _FavoritesCarouselSectionState extends State<FavoritesCarouselSection> {
             'Mantén presionado un Pokémon\npara añadirlo a favoritos',
             textAlign: TextAlign.center,
             style: GoogleFonts.outfit(
-              fontSize: 12,
-              color: Colors.white24,
               fontWeight: FontWeight.w400,
               height: 1.5,
             ),
@@ -157,30 +157,35 @@ class _FavoriteCarouselCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: isActive
-            ? const LinearGradient(
+            ? LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF2C1F3E),
-                  Color(0xFF1A1030),
-                ],
+                colors: isDark
+                    ? [const Color(0xFF2C1F3E), const Color(0xFF1A1030)]
+                    : [const Color(0xFFE8F0FE), const Color(0xFFD2E3FC)],
               )
-            : const LinearGradient(
-                colors: [Color(0xFF161B27), Color(0xFF0F1319)],
+            : LinearGradient(
+                colors: isDark
+                    ? [const Color(0xFF161B27), const Color(0xFF0F1319)]
+                    : [const Color(0xFFF8F9FA), const Color(0xFFF1F3F4)],
               ),
         border: Border.all(
-          color: isActive ? const Color(0xFFFFD700).withOpacity(0.5) : Colors.white.withOpacity(0.06),
+          color: isActive
+              ? const Color(0xFFFFD700).withValues(alpha: 0.5)
+              : (isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.06)),
           width: isActive ? 1.5 : 1,
         ),
         boxShadow: isActive
             ? [
                 BoxShadow(
-                  color: const Color(0xFFFFD700).withOpacity(0.15),
+                  color: const Color(0xFFFFD700).withValues(alpha: isActive ? 0.3 : 0.15),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
@@ -214,7 +219,9 @@ class _FavoriteCarouselCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: isActive ? const Color(0xFFFFD700).withOpacity(0.15) : Colors.white.withOpacity(0.05),
+                        color: isActive
+                            ? const Color(0xFFFFD700).withValues(alpha: 0.15)
+                            : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -233,7 +240,7 @@ class _FavoriteCarouselCard extends StatelessWidget {
                         width: 26,
                         height: 26,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.06),
+                          color: Colors.white.withValues(alpha: 0.06),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(

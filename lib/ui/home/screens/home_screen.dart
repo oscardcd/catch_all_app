@@ -97,7 +97,10 @@ class _HomeView extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          const PokeBallIcon(),
+          GestureDetector(
+            onTap: () => _showSettingsMenu(context),
+            child: const PokeBallIcon(),
+          ),
           const SizedBox(width: 8),
           IconButton(
             onPressed: () => context.go('/login'),
@@ -105,6 +108,89 @@ class _HomeView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showSettingsMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF161B22),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) {
+        return BlocBuilder<ThemeCubit, ThemeMode>(
+          builder: (context, currentMode) {
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Ajustes de Tema',
+                      style: GoogleFonts.outfit(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _buildThemeOption(
+                      context,
+                      'Modo Claro',
+                      Icons.light_mode_rounded,
+                      ThemeMode.light,
+                      currentMode == ThemeMode.light,
+                    ),
+                    _buildThemeOption(
+                      context,
+                      'Modo Oscuro',
+                      Icons.dark_mode_rounded,
+                      ThemeMode.dark,
+                      currentMode == ThemeMode.dark,
+                    ),
+                    _buildThemeOption(
+                      context,
+                      'Sistema',
+                      Icons.settings_suggest_rounded,
+                      ThemeMode.system,
+                      currentMode == ThemeMode.system,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildThemeOption(
+    BuildContext context,
+    String label,
+    IconData icon,
+    ThemeMode mode,
+    bool isSelected,
+  ) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: isSelected ? const Color(0xFFFF4444) : Colors.white54,
+      ),
+      title: Text(
+        label,
+        style: GoogleFonts.outfit(
+          color: isSelected ? Colors.white : Colors.white54,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+        ),
+      ),
+      trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: Color(0xFFFF4444)) : null,
+      onTap: () {
+        context.read<ThemeCubit>().updateTheme(mode);
+        Navigator.pop(context);
+      },
     );
   }
 }

@@ -21,26 +21,31 @@ class CATheme {
   static final light = FlexThemeData.light(
     colors: _skFlexSchemeData.light,
   ).copyWith(
+    scaffoldBackgroundColor: Palette.softBlue,
     splashColor: Colors.transparent,
     cardColor: Palette.white,
     colorScheme: const ColorScheme.light(
-      surface: Palette.primaryLight,
+      surface: Palette.white,
       onSurface: Palette.gray,
       primary: Palette.primaryLight,
       secondary: Palette.secondaryLight,
       primaryContainer: Palette.primaryLight,
       tertiary: Palette.cyan,
     ),
-    // iconTheme: const IconThemeData(color: Palette.white),
   );
 
   static final dark = FlexThemeData.dark(
     colors: _skFlexSchemeData.dark,
   ).copyWith(
+    scaffoldBackgroundColor: const Color(0xFF0D1117), // GitHub-like dark background
     highlightColor: Colors.transparent,
     splashColor: Colors.transparent,
     cardColor: Palette.white,
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: Palette.black),
+    ),
     colorScheme: const ColorScheme.dark(
+      surface: Color(0xFF161B22),
       primary: Palette.primaryDark,
       secondary: Palette.secondaryDark,
       onSecondary: Palette.white,

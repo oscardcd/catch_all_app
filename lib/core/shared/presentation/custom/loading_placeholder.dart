@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 
 class LoadingPlaceholder extends StatelessWidget {
-  const LoadingPlaceholder({super.key});
+  const LoadingPlaceholder({
+    super.key,
+    this.width = 150,
+    this.height = 150,
+  });
+
+  final double width;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 150,
-      height: 150,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),

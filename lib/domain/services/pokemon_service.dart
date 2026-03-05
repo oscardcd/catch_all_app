@@ -1,18 +1,8 @@
 import 'package:catch_all_app/domain/entities/all_pokemons.dart';
-import 'package:catch_all_app/domain/repositories/pokemon_repository.dart';
-import 'package:injectable/injectable.dart';
+import 'package:catch_all_app/domain/entities/pokemon.dart';
+import 'package:client_api/client_api.dart';
 
-abstract class PokemonUseCase {
-  Future<AllPokemons?> getAllPokemons(int offset, int limitOfPokemons);
-}
-
-@Injectable(as: PokemonUseCase)
-class PokemonService implements PokemonUseCase {
-  PokemonService(this._pokemonRepository);
-
-  final PokemonRepository _pokemonRepository;
-  @override
-  Future<AllPokemons?> getAllPokemons(int offset, int limitOfPokemons) {
-    return _pokemonRepository.getPokemons(limitOfPokemons, offset);
-  }
+abstract class PokemonService {
+  Future<ApiResult<AllPokemons?>> getAllPokemons(int offSet, int limitOfPokemons);
+  Future<ApiResult<Pokemon?>> getPokemonByName(String name);
 }

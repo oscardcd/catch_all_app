@@ -7,18 +7,17 @@ import 'core/core.dart';
 
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize Local Storage via Hive
-  await LocalStorage.instance.init();
-
   try {
+    // Initialize Local Storage via Hive
+    await LocalStorage.instance.init();
+
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    await configureDependencies();
+    runApp(const CatchAllApp());
   } on Exception catch (e) {
     print(e);
   }
-
-  await configureDependencies();
-  runApp(const CatchAllApp());
 }

@@ -151,7 +151,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa tu usuario';
+                              return 'Por favor ingresa tu correo';
+                            }
+                            final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                            if (!emailRegex.hasMatch(value)) {
+                              return 'Por favor ingresa un correo válido';
                             }
                             return null;
                           },
@@ -215,8 +219,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (value == null || value.isEmpty) {
                               return 'Por favor ingresa tu contraseña';
                             }
-                            if (value.length < 4) {
-                              return 'La contraseña debe tener al menos 4 caracteres';
+                            if (value.length < 6) {
+                              return 'La contraseña debe tener al menos 6 caracteres';
+                            }
+                            if (!value.contains(RegExp(r'[A-Z]'))) {
+                              return 'La contraseña debe tener al menos una mayúscula';
+                            }
+                            if (!value.contains(RegExp(r'[0-9]'))) {
+                              return 'La contraseña debe tener al menos un número';
                             }
                             return null;
                           },

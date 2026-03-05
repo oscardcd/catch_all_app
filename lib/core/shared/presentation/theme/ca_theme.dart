@@ -37,7 +37,7 @@ class CATheme {
   static final dark = FlexThemeData.dark(
     colors: _skFlexSchemeData.dark,
   ).copyWith(
-    scaffoldBackgroundColor: const Color(0xFF0D1117), // GitHub-like dark background
+    scaffoldBackgroundColor: const Color(0xFF0D1117),
     highlightColor: Colors.transparent,
     splashColor: Colors.transparent,
     cardColor: Palette.secondaryDark.withValues(alpha: 0.5),

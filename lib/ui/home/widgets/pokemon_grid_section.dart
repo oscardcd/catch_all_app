@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:catch_all_app/core/core.dart';
 import 'package:catch_all_app/ui/home/bloc/home_bloc.dart';
+import 'package:catch_all_app/ui/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Pokemon type color mapping is now centrally managed in Palette.pokemonTypeColors
@@ -201,14 +203,11 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
         return Transform.scale(scale: _scaleAnim.value, child: child);
       },
       child: GestureDetector(
-        onTapDown: (_) {
-          _controller.forward();
-        },
-        onTapUp: (_) {
-          _controller.reverse();
-        },
-        onTapCancel: () {
-          _controller.reverse();
+        onTap: () {
+          context.pushNamed(
+            PokemonDetailScreen.name,
+            pathParameters: {'name': widget.pokemon.name},
+          );
         },
         onLongPress: widget.onFavoriteToggle,
         child: Container(

@@ -22,6 +22,11 @@ class AppRouter {
         name: HomeScreen.name,
         builder: HomeScreen.builder,
       ),
+      GoRoute(
+        path: PokemonDetailScreen.route,
+        name: PokemonDetailScreen.name,
+        builder: PokemonDetailScreen.builder,
+      ),
     ],
   );
 }

@@ -1,5 +1,4 @@
 import 'package:catch_all_app/core/core.dart';
-import 'package:catch_all_app/domain/entities/pokemon.dart';
 import 'package:catch_all_app/ui/home/bloc/home_bloc.dart';
 import 'package:catch_all_app/ui/home/widgets/pokemon_grid_section.dart';
 import 'package:catch_all_app/ui/home/widgets/favorites_carousel_section.dart';

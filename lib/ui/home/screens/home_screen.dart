@@ -33,8 +33,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             Text(
               'Bienvenido a Catch All App',
-              style:
-                  GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold),
+              style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ElevatedButton(

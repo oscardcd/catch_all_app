@@ -13,7 +13,6 @@ Future<void> bootstrap() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-    name: 'catch-all-app',
   );
 
   await configureDependencies();

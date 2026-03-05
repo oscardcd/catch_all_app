@@ -69,6 +69,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '375122364789',
     projectId: 'catch-all-app',
     storageBucket: 'catch-all-app.firebasestorage.app',
+    iosClientId: '375122364789-81fn54nl422g7kgcmlpkostdu9om4fdf.apps.googleusercontent.com',
     iosBundleId: 'com.example.catchPokeApp',
   );
+
 }

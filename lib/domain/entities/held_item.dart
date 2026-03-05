@@ -8,8 +8,18 @@ part 'held_item.g.dart';
 abstract class HeldItem with _$HeldItem {
   factory HeldItem({
     Species? item,
+    @JsonKey(name: 'version_details') List<VersionDetail>? versionDetails,
   }) = _HeldItem;
 
-  factory HeldItem.fromJson(Map<String, dynamic> json) =>
-      _$HeldItemFromJson(json);
+  factory HeldItem.fromJson(Map<String, dynamic> json) => _$HeldItemFromJson(json);
+}
+
+@freezed
+abstract class VersionDetail with _$VersionDetail {
+  factory VersionDetail({
+    int? rarity,
+    Species? version,
+  }) = _VersionDetail;
+
+  factory VersionDetail.fromJson(Map<String, dynamic> json) => _$VersionDetailFromJson(json);
 }

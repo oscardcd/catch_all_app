@@ -7,7 +7,7 @@ part 'stat.g.dart';
 @freezed
 abstract class Stat with _$Stat {
   factory Stat({
-    int? baseStat,
+    @JsonKey(name: 'base_stat') int? baseStat,
     int? effort,
     Species? stat,
   }) = _Stat;

@@ -78,7 +78,7 @@ class _PokemonGridSectionState extends State<PokemonGridSection> {
                 style: GoogleFonts.outfit(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: Theme.of(context).textTheme.headlineLarge?.color,
+                  color: Theme.of(context).colorScheme.surface,
                 ),
               ),
               space8,
@@ -87,17 +87,11 @@ class _PokemonGridSectionState extends State<PokemonGridSection> {
                 decoration: BoxDecoration(
                   color: Palette.pokemonRed.withValues(alpha: 0.15),
                   borderRadius: borderRadius10,
-                  border: Border.all(
-                    color: Palette.pokemonRed.withValues(alpha: 0.4),
-                  ),
+                  border: Border.all(color: Palette.pokemonRed.withValues(alpha: 0.4)),
                 ),
                 child: Text(
                   '${widget.pokemons.length}',
-                  style: GoogleFonts.outfit(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFFFF4444),
-                  ),
+                  style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, color: const Color(0xFFFF4444)),
                 ),
               ),
             ],
@@ -146,24 +140,14 @@ class _PokemonGridSectionState extends State<PokemonGridSection> {
     return Column(
       children: List.generate(
         _rows,
-        (_) => const Padding(
-          padding: edgeInsets4,
-          child: LoadingPlaceholder(
-            width: 82,
-            height: 82,
-          ),
-        ),
+        (_) => const Padding(padding: edgeInsets4, child: LoadingPlaceholder(width: 82, height: 82)),
       ),
     );
   }
 }
 
 class _PokemonGridCard extends StatefulWidget {
-  const _PokemonGridCard({
-    required this.pokemon,
-    required this.isFavorite,
-    required this.onFavoriteToggle,
-  });
+  const _PokemonGridCard({required this.pokemon, required this.isFavorite, required this.onFavoriteToggle});
 
   final PokemonEntry pokemon;
   final bool isFavorite;
@@ -180,13 +164,11 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 120),
-    );
-    _scaleAnim = Tween<double>(begin: 1.0, end: 0.92).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 120));
+    _scaleAnim = Tween<double>(
+      begin: 1.0,
+      end: 0.92,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -204,10 +186,7 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
       },
       child: GestureDetector(
         onTap: () {
-          context.pushNamed(
-            PokemonDetailScreen.name,
-            pathParameters: {'name': widget.pokemon.name},
-          );
+          context.pushNamed(PokemonDetailScreen.name, pathParameters: {'name': widget.pokemon.name});
         },
         onLongPress: widget.onFavoriteToggle,
         child: Container(
@@ -219,86 +198,95 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
             borderRadius: borderRadius16,
             border: Border.all(
               color: widget.isFavorite
-                  ? const Color(0xFFFFD700).withValues(alpha: 0.6)
+                  ? const Color(0xFFFFD700).withValues(alpha: 0.8)
                   : (Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white.withValues(alpha: 0.05)
-                      : Colors.black.withValues(alpha: 0.05)),
-              width: widget.isFavorite ? 1.5 : 1,
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : Colors.black.withValues(alpha: 0.08)),
+              width: widget.isFavorite ? 2.0 : 1.0,
             ),
-            boxShadow: widget.isFavorite
-                ? [
-                    BoxShadow(
-                      color: const Color(0xFFFFD700).withValues(alpha: 0.2),
-                      blurRadius: 8,
-                      spreadRadius: 1,
-                    )
-                  ]
-                : null,
-          ),
-          child: Stack(
-            children: [
-              // Pokemon image
-              Positioned.fill(
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Image.network(
-                    widget.pokemon.spriteUrl,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const PokeBallIcon(size: 32),
-                  ),
-                ),
-              ),
-              // Pokemon ID
-              Positioned(
-                top: 4,
-                left: 6,
-                child: Text(
-                  '#${widget.pokemon.id.toString().padLeft(3, '0')}',
-                  style: GoogleFonts.outfit(
-                    fontSize: 8,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white30,
-                  ),
-                ),
-              ),
-              // Favorite star
+            boxShadow: [
               if (widget.isFavorite)
-                Positioned(
-                  top: 2,
-                  right: 4,
-                  child: const Icon(
-                    Icons.star_rounded,
-                    color: Color(0xFFFFD700),
-                    size: 12,
-                  ),
-                ),
-              // Name tooltip at bottom
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 3),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.4),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(15),
-                    ),
-                  ),
-                  child: Text(
-                    _capitalize(widget.pokemon.name),
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.outfit(
-                      fontSize: 7,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ),
-              ),
+                BoxShadow(color: const Color(0xFFFFD700).withValues(alpha: 0.3), blurRadius: 10, spreadRadius: 1)
+              else
+                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2)),
             ],
+          ),
+          child: ClipRRect(
+            borderRadius: borderRadius16,
+            child: Stack(
+              children: [
+                // Subtle background pattern or tint
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Colors.white.withValues(alpha: 0.02), Colors.black.withValues(alpha: 0.01)],
+                      ),
+                    ),
+                  ),
+                ),
+                // Pokemon image
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Image.network(
+                      widget.pokemon.spriteUrl,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const PokeBallIcon(size: 32),
+                    ),
+                  ),
+                ),
+                // Pokemon ID
+                Positioned(
+                  top: 6,
+                  left: 8,
+                  child: Text(
+                    '#${widget.pokemon.id.toString().padLeft(3, '0')}',
+                    style: GoogleFonts.outfit(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w800,
+                      color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ),
+                // Favorite star
+                if (widget.isFavorite)
+                  Positioned(
+                    top: 4,
+                    right: 6,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 4)],
+                      ),
+                      child: const Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 14),
+                    ),
+                  ),
+                // Name label at bottom (Glassmorphism look)
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    decoration: BoxDecoration(color: Theme.of(context).cardColor.withValues(alpha: 0.5)),
+                    child: Text(
+                      _capitalize(widget.pokemon.name),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.outfit(
+                        fontSize: 8,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

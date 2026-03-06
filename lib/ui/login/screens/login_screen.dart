@@ -1,4 +1,4 @@
-import 'package:catch_all_app/core/injector/injector.dart';
+import 'package:catch_all_app/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,11 +12,8 @@ class LoginScreen extends StatefulWidget {
   static const String route = '/login';
   static const String name = 'login';
 
-  static Widget builder(BuildContext _, GoRouterState __) {
-    return BlocProvider(
-      create: (_) => LoginBloc(Repositories.auth),
-      child: const LoginScreen._(),
-    );
+  static Widget builder(BuildContext _, GoRouterState _) {
+    return BlocProvider(create: (_) => LoginBloc(Repositories.auth), child: const LoginScreen._());
   }
 
   @override
@@ -38,32 +35,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: const Color(0xFFF8FAFC), // Modern flat background
           body: BlocConsumer<LoginBloc, LoginState>(
             listener: (context, state) {
               state.maybeWhen(
                 loginSuccess: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Inicio de sesión exitoso')),
-                  );
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Inicio de sesión exitoso')));
                   context.go('/');
                 },
                 failure: (message) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: $message')),
-                  );
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $message')));
                 },
                 orElse: () {},
               );
             },
             builder: (context, state) {
-              final isLoading = state.maybeWhen(
-                loadInProgress: () => true,
-                orElse: () => false,
-              );
+              final isLoading = state.maybeWhen(loadInProgress: () => true, orElse: () => false);
               return SafeArea(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -77,15 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         Container(
                           height: 80,
                           width: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.blueAccent.withValues(alpha: 0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.auto_awesome,
-                            color: Colors.blueAccent,
-                            size: 40,
-                          ),
+                          decoration: BoxDecoration(color: context.colorScheme.surface, shape: BoxShape.circle),
+                          child: const Icon(Icons.auto_awesome, color: Colors.blueAccent, size: 40),
                         ),
                         const SizedBox(height: 32),
                         Text(
@@ -94,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: GoogleFonts.outfit(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
-                            color: const Color(0xFF1E293B),
+                            color: isDark ? Colors.white : const Color(0xFF1E293B),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -103,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           textAlign: TextAlign.center,
                           style: GoogleFonts.outfit(
                             fontSize: 16,
-                            color: const Color(0xFF64748B),
+                            color: isDark ? Colors.white54 : const Color(0xFF64748B),
                           ),
                         ),
                         const SizedBox(height: 48),
@@ -121,12 +106,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormField(
                           controller: _usernameController,
                           enabled: !isLoading,
-                          style: GoogleFonts.outfit(),
+                          style: GoogleFonts.outfit(color: context.colorScheme.onSurface),
+
                           decoration: InputDecoration(
                             hintText: 'nombre@ejemplo.com',
-                            prefixIcon: const Icon(Icons.person_outline, size: 20),
+                            prefixIcon: Icon(Icons.person_outline, size: 20, color: context.colorScheme.primary),
                             filled: true,
-                            fillColor: Colors.white,
+                            // fillColor: context.colorScheme.surface,
                             contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -176,10 +162,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           obscureText: !_isPasswordVisible,
                           enabled: !isLoading,
-                          style: GoogleFonts.outfit(),
+                          style: GoogleFonts.outfit(color: context.colorScheme.onSurface),
+
                           decoration: InputDecoration(
                             hintText: '••••••••',
-                            prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                            prefixIcon: Icon(Icons.lock_outline, size: 20, color: context.colorScheme.primary),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
@@ -240,9 +227,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               '¿Olvidaste tu contraseña?',
                               style: GoogleFonts.outfit(
-                                color: Colors.blueAccent,
+                                color: theme.colorScheme.primary,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 14,
+                                fontSize: 13,
                               ),
                             ),
                           ),
@@ -257,20 +244,18 @@ class _LoginScreenState extends State<LoginScreen> {
                               : () {
                                   if (_formKey.currentState!.validate()) {
                                     context.read<LoginBloc>().add(
-                                          LoginEvent.submitLogin(
-                                            username: _usernameController.text,
-                                            password: _passwordController.text,
-                                          ),
-                                        );
+                                      LoginEvent.submitLogin(
+                                        username: _usernameController.text,
+                                        password: _passwordController.text,
+                                      ),
+                                    );
                                   }
                                 },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueAccent,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             elevation: 0,
                           ),
                           child: isLoading
@@ -284,10 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 )
                               : Text(
                                   'Iniciar Sesión',
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                         ),
 
@@ -301,10 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: Text(
                                 'O continúa con',
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF94A3B8),
-                                  fontSize: 14,
-                                ),
+                                style: GoogleFonts.outfit(color: const Color(0xFF94A3B8), fontSize: 14),
                               ),
                             ),
                             const Expanded(child: Divider(color: Color(0xFFE2E8F0))),
@@ -320,26 +299,20 @@ class _LoginScreenState extends State<LoginScreen> {
                               : () {
                                   context.read<LoginBloc>().add(const LoginEvent.submitGoogleLogin());
                                 },
-                          icon: const FaIcon(
-                            FontAwesomeIcons.google,
-                            color: Color(0xFFEA4335),
-                            size: 18,
-                          ),
+                          icon: const FaIcon(FontAwesomeIcons.google, color: Color(0xFFEA4335), size: 18),
                           label: Text(
                             'Google',
                             style: GoogleFonts.outfit(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: const Color(0xFF1E293B),
+                              color: isDark ? Colors.white70 : const Color(0xFF1E293B),
                             ),
                           ),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
-                            side: const BorderSide(color: Color(0xFFE2E8F0)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            backgroundColor: Colors.white,
+                            side: BorderSide(color: isDark ? Colors.white12 : const Color(0xFFE2E8F0)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            backgroundColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -366,9 +339,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             side: const BorderSide(color: Color(0xFFE2E8F0)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             backgroundColor: Colors.white,
                           ),
                         ),
@@ -381,10 +352,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             Text(
                               '¿No tienes una cuenta? ',
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF64748B),
-                                fontSize: 14,
-                              ),
+                              style: GoogleFonts.outfit(color: const Color(0xFF64748B), fontSize: 14),
                             ),
                             GestureDetector(
                               onTap: () {},

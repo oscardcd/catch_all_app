@@ -116,6 +116,26 @@ flutter run
 
 ---
 
+## 🔑 Autenticación y Pruebas
+
+Para facilitar las pruebas locales, la aplicación cuenta con un flujo de autenticación simulado y soporte para Firebase/Google Sign-In.
+
+### 🧪 Credenciales de Prueba (Login Local)
+Puedes ingresar a la aplicación utilizando las siguientes credenciales de prueba en el formulario de login:
+
+*   **Email:** Debe contener `testDev` (Ejemplo: `testDev@catchall.com`)
+*   **Password:** Debe contener `c4tch-All-App`
+
+### 🔄 Flujo de Ingreso
+1. Inicie la aplicación.
+2. En la pantalla de Login, ingrese el correo y contraseña mencionados arriba.
+3. Presione el botón de **Login**.
+4. Si las credenciales son válidas, será redirigido a la pantalla principal (Home).
+
+También puede utilizar el botón de **Google Sign-In** si la configuración de Firebase está activa en su entorno.
+
+---
+
 ## 🛠 Git Workflow & Commits
 
 To maintain code quality and consistency, please follow these steps before committing your changes:

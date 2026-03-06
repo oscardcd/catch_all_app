@@ -9,11 +9,9 @@ class AuthServiceImpl implements AuthService {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
-  AuthServiceImpl({
-    FirebaseAuth? firebaseAuth,
-    GoogleSignIn? googleSignIn,
-  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
+  AuthServiceImpl({FirebaseAuth? firebaseAuth, GoogleSignIn? googleSignIn})
+    : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+      _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
 
   Future<(User, String)> _authenticateWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
@@ -55,9 +53,7 @@ class AuthServiceImpl implements AuthService {
         (json) => UserModel.fromJson(json as Map<String, dynamic>),
       );
     } catch (e) {
-      return ApiResult.failure(
-        error: e is Exception ? e : Exception(e.toString()),
-      );
+      return ApiResult.failure(error: e is Exception ? e : Exception(e.toString()));
     }
   }
 
@@ -67,17 +63,10 @@ class AuthServiceImpl implements AuthService {
       final (user, _) = await _authenticateWithGoogle();
 
       return ApiResult.success(
-        data: UserModel(
-          id: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoUrl: user.photoURL,
-        ),
+        data: UserModel(id: user.uid, email: user.email, displayName: user.displayName, photoUrl: user.photoURL),
       );
     } catch (e) {
-      return ApiResult.failure(
-        error: e is Exception ? e : Exception(e.toString()),
-      );
+      return ApiResult.failure(error: e is Exception ? e : Exception(e.toString()));
     }
   }
 
@@ -85,19 +74,17 @@ class AuthServiceImpl implements AuthService {
   Future<ApiResult<UserModel>> signInWithEmailAndPassword(String email, String password) async {
     await Future.delayed(const Duration(seconds: 1)); // Simulate a little delay
 
-    if (email.contains('oscardcd') && password.contains('1234')) {
+    if (email.contains('testDev') && password.contains('c4tch-All-App')) {
       return ApiResult.success(
         data: const UserModel(
           id: 'mock-local-uid',
-          email: 'oscardcd@catchall.com',
-          displayName: 'Oscar Correa',
-          photoUrl: 'https://i.pravatar.cc/150?u=oscardcd',
+          email: 'testDev@catchall.com',
+          displayName: 'test dev',
+          photoUrl: 'https://i.pravatar.cc/150?u=testDev',
         ),
       );
     } else {
-      return ApiResult.failure(
-        error: Exception('Credenciales locales inválidas'),
-      );
+      return ApiResult.failure(error: Exception('Credenciales locales inválidas'));
     }
   }
 

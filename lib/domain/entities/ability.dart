@@ -8,10 +8,9 @@ part 'ability.g.dart';
 abstract class Ability with _$Ability {
   factory Ability({
     Species? ability,
-    @Default(false) bool isHidden,
+    @JsonKey(name: 'is_hidden') @Default(false) bool isHidden,
     int? slot,
   }) = _Ability;
 
-  factory Ability.fromJson(Map<String, dynamic> json) =>
-      _$AbilityFromJson(json);
+  factory Ability.fromJson(Map<String, dynamic> json) => _$AbilityFromJson(json);
 }

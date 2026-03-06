@@ -17,13 +17,7 @@ class PokeBallIcon extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [Color(0xFFFF4444), Color(0xFFCC0000)],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFFF4444).withOpacity(0.5),
-            blurRadius: 12,
-            spreadRadius: 2,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: const Color(0xFFFF4444).withValues(alpha: 0.3), blurRadius: 12, spreadRadius: 2)],
       ),
       child: Stack(
         alignment: Alignment.center,
@@ -48,33 +42,17 @@ class _PokeBallPainter extends CustomPainter {
 
     // Top half (red)
     final redPaint = Paint()..color = const Color(0xFFFF4444);
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      3.14159,
-      3.14159,
-      false,
-      redPaint,
-    );
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 3.14159, 3.14159, false, redPaint);
 
     // Bottom half (white)
     final whitePaint = Paint()..color = Colors.white;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      0,
-      3.14159,
-      false,
-      whitePaint,
-    );
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 0, 3.14159, false, whitePaint);
 
     // Middle line
     final linePaint = Paint()
       ..color = const Color(0xFF1A1A1A)
       ..strokeWidth = size.width * 0.07;
-    canvas.drawLine(
-      Offset(0, center.dy),
-      Offset(size.width, center.dy),
-      linePaint,
-    );
+    canvas.drawLine(Offset(0, center.dy), Offset(size.width, center.dy), linePaint);
 
     // Center circle (border)
     final borderPaint = Paint()

@@ -10,7 +10,7 @@ Future<void> injectRepositories() async {
   );
 
   GetIt.I.registerLazySingleton<PokemonRepository>(
-    () => PokemonRepositoryImpl(Services.pokemonService),
+    () => PokemonRepositoryImpl(Services.pokemonService, Services.localStorage),
   );
 }
 

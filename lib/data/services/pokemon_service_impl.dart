@@ -19,17 +19,20 @@ class PokemonServiceImpl implements PokemonService {
   }
 
   @override
-  Future<ApiResult<AllPokemons?>> getAllPokemons(int offSet, int limitPokemons) {
+  Future<ApiResult<AllPokemons?>> getAllPokemons(int offSet, int limitPokemons) async {
     init();
-    return ApiClient.instance.request(
+    return await ApiClient.instance.request(
       ApiRequest.get(PokemonsEndpoints.allByPages(offSet, limitPokemons)),
       (j) => AllPokemons.fromJson(j),
     );
   }
 
   @override
-  Future<ApiResult<Pokemon?>> getPokemonByName(String name) {
-    // TODO: implement getPokemonByName
-    throw UnimplementedError();
+  Future<ApiResult<Pokemon?>> getPokemonByName(String name) async {
+    init();
+    return ApiClient.instance.request(
+      ApiRequest.get(PokemonsEndpoints.byName(name)),
+      (j) => Pokemon.fromJson(j),
+    );
   }
 }

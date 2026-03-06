@@ -15,7 +15,8 @@ class PokemonEntry {
   final int id;
   final String name;
 
-  String get spriteUrl => 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png';
+  String get spriteUrl =>
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png';
 }
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
@@ -30,71 +31,64 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   static const int _initialLimit = 150;
   static const int _pageSize = 50;
 
-  FutureOr<void> _onLoadInitialPokemons(
-    _LoadInitialPokemons event,
-    Emitter<HomeState> emit,
-  ) async {
+  FutureOr<void> _onLoadInitialPokemons(_LoadInitialPokemons event, Emitter<HomeState> emit) async {
     emit(const HomeState.loading());
     try {
       final result = await _pokemonRepository.getPokemons(_initialLimit, 0);
       final count = result?.count ?? 0;
       final entries = _buildEntries(result?.results ?? [], 0);
-      emit(HomeState.loaded(
-        allPokemons: entries,
-        favoriteIds: const [],
-        hasMore: entries.length < count,
-        currentOffset: entries.length,
-      ));
+      emit(
+        HomeState.loaded(
+          allPokemons: entries,
+          favoriteIds: const [],
+          hasMore: entries.length < count,
+          currentOffset: entries.length,
+        ),
+      );
     } catch (e) {
       emit(HomeState.failure(e.toString()));
     }
   }
 
-  FutureOr<void> _onLoadMorePokemons(
-    _LoadMorePokemons event,
-    Emitter<HomeState> emit,
-  ) async {
+  FutureOr<void> _onLoadMorePokemons(_LoadMorePokemons event, Emitter<HomeState> emit) async {
     final currentState = state;
     if (currentState is! _Loaded) return;
 
-    emit(HomeState.loadingMore(
-      allPokemons: currentState.allPokemons,
-      favoriteIds: currentState.favoriteIds,
-      currentOffset: currentState.currentOffset,
-    ));
-
-    try {
-      final result = await _pokemonRepository.getPokemons(
-        _pageSize,
-        currentState.currentOffset,
-      );
-      final count = result?.count ?? 0;
-      final newEntries = _buildEntries(
-        result?.results ?? [],
-        currentState.currentOffset,
-      );
-      final merged = [...currentState.allPokemons, ...newEntries];
-      emit(HomeState.loaded(
-        allPokemons: merged,
-        favoriteIds: currentState.favoriteIds,
-        hasMore: merged.length < count,
-        currentOffset: merged.length,
-      ));
-    } catch (e) {
-      // Revert to previous loaded state on error
-      emit(HomeState.loaded(
+    emit(
+      HomeState.loadingMore(
         allPokemons: currentState.allPokemons,
         favoriteIds: currentState.favoriteIds,
-        hasMore: true,
         currentOffset: currentState.currentOffset,
-      ));
+      ),
+    );
+
+    try {
+      final result = await _pokemonRepository.getPokemons(_pageSize, currentState.currentOffset);
+      final count = result?.count ?? 0;
+      final newEntries = _buildEntries(result?.results ?? [], currentState.currentOffset);
+      final merged = [...currentState.allPokemons, ...newEntries];
+      emit(
+        HomeState.loaded(
+          allPokemons: merged,
+          favoriteIds: currentState.favoriteIds,
+          hasMore: merged.length < count,
+          currentOffset: merged.length,
+        ),
+      );
+    } catch (e) {
+      // Revert to previous loaded state on error
+      emit(
+        HomeState.loaded(
+          allPokemons: currentState.allPokemons,
+          favoriteIds: currentState.favoriteIds,
+          hasMore: true,
+          currentOffset: currentState.currentOffset,
+        ),
+      );
     }
   }
 
-  FutureOr<void> _onToggleFavorite(
-    _ToggleFavorite event,
-    Emitter<HomeState> emit,
-  ) {
+  FutureOr<void> _onToggleFavorite(_ToggleFavorite event, Emitter<HomeState> emit) {
     final currentState = state;
     List<int> favorites;
     List<PokemonEntry> allPokemons;
@@ -115,16 +109,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       return null;
     }
 
-    final updated = favorites.contains(event.pokemonId)
-        ? favorites.where((id) => id != event.pokemonId).toList()
-        : [...favorites, event.pokemonId];
+    final updated = Set<int>.from(favorites);
+    if (updated.contains(event.pokemonId)) {
+      updated.remove(event.pokemonId);
+    } else {
+      updated.add(event.pokemonId);
+    }
 
-    emit(HomeState.loaded(
-      allPokemons: allPokemons,
-      favoriteIds: updated,
-      hasMore: hasMore,
-      currentOffset: currentOffset,
-    ));
+    emit(
+      HomeState.loaded(
+        allPokemons: allPokemons,
+        favoriteIds: updated.toList(),
+        hasMore: hasMore,
+        currentOffset: currentOffset,
+      ),
+    );
   }
 
   List<PokemonEntry> _buildEntries(List<dynamic> results, int offset) {

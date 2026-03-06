@@ -152,10 +152,8 @@ class _FavoriteCarouselCard extends StatelessWidget {
     return GestureDetector(
       onLongPress: () => _showRemoveConfirmation(context),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
         decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: borderRadius16,
           border: Border.all(
             color: isActive
                 ? const Color(0xFFFFD700).withValues(alpha: 0.8)
@@ -182,7 +180,7 @@ class _FavoriteCarouselCard extends StatelessWidget {
             ),
             // Content
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              padding: edgeInsetsH16.add(edgeInsetsV8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -194,7 +192,7 @@ class _FavoriteCarouselCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: isActive
                               ? const Color(0xFFFFD700).withValues(alpha: 0.15)
-                              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
+                              : context.colorScheme.primary.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(

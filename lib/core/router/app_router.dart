@@ -10,7 +10,7 @@ class AppRouter {
 
   static final GoRouter goRouter = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: HomeScreen.route,
+    initialLocation: LoginScreen.route,
     debugLogDiagnostics: true,
     redirect: (context, state) async {
       final user = await Repositories.auth.getCurrentUser();

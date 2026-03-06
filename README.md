@@ -3,6 +3,14 @@
 A scalable Flutter application built using **Clean Architecture** principles to ensure maintainability, testability, and separation of concerns.
 
 ---
+## Description
+
+This is a Flutter application that implements the Clean Architecture pattern to separate concerns and make the codebase more maintainable and testable.
+use pokemon api to get pokemon list and details and show them for known pokemon.
+
+updateds comming soon!!
+
+---
 
 ## 🏗 Architecture
 
@@ -133,6 +141,33 @@ Puedes ingresar a la aplicación utilizando las siguientes credenciales de prueb
 4. Si las credenciales son válidas, será redirigido a la pantalla principal (Home).
 
 También puede utilizar el botón de **Google Sign-In** si la configuración de Firebase está activa en su entorno.
+
+---
+
+## 🌐 Estrategia Offline
+La aplicación implementa una estrategia de persistencia local robusta:
+- **Caché de Datos**: Se utiliza un paquete de almacenamiento local (basado en Hive) para guardar la lista de Pokémon y sus detalles tras la primera consulta exitosa.
+- **Soporte Offline**: Al iniciar la aplicación o navegar, el sistema verifica primero la existencia de datos locales. Si se detecta un fallo en la red o un error en la API, la app carga automáticamente los Pokémon guardados previamente.
+- **Sincronización Silenciosa**: Cada vez que el usuario carga nuevos Pokémon desde la API, estos se agregan de forma incremental al almacenamiento local.
+
+## 🔐 Flujo de Autenticación
+El sistema de acceso está diseñado en capas:
+1. **Presentación**: `LoginBloc` gestiona los eventos de entrada (Username/Password, Google, Firebase) y los estados de carga, éxito o fallo.
+2. **Navegación**: Se utiliza `GoRouter` con lógica de redirección (`redirect`) que detecta automáticamente si el usuario tiene una sesión activa para enviarlo al Home o al Login.
+3. **Persistencia de Sesión**: Los datos del usuario (nombre, ID) se mantienen de forma persistente para evitar re-autenticaciones innecesarias.
+
+## 🛠 Decisiones Técnicas
+- **PokeAPI (API Externa)**: Seleccionada por ser el estándar de la industria para este tipo de aplicaciones, ofreciendo una estructura de datos rica ideal para demostrar Clean Architecture.
+- **Hive (Persistencia Local)**: Se eligió por su alto rendimiento, facilidad de implementación sin esquemas complejos de SQL y soporte nativo para almacenamiento NoSQL.
+- **BLoC/Cubit (Gestión de Estados)**: Elegido por su predictibilidad y clara separación de la lógica de negocio, lo que facilita las pruebas unitarias y la escalabilidad del proyecto.
+
+## 🔮 Posibles Mejoras Futuras
+- [ ] **Reglas de Negocio**: agregar reglas para hacer interactiva la app.
+- [ ] **Paginación Optimizada**: Mejorar el control de carga infinita para evitar saltos en el scroll.
+- [ ] **Cobertura de Tests**: Alcanzar un 90%+ de cobertura de pruebas unitarias y de integración.
+- [ ] **i18n**: Soporte para múltiples idiomas (Español, Inglés, Japonés).
+- [ ] **UI/UX Premium**: Implementar Shimmer effects avanzados y animaciones Hero fluidas para todas las imágenes.
+- [ ] **Búsqueda y Filtros**: Añadir capacidad de búsqueda por nombre e ID y filtrado por tipo de Pokémon.
 
 ---
 

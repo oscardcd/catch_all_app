@@ -1,4 +1,4 @@
-import 'package:catch_all_app/core/injector/injector.dart';
+import 'package:catch_all_app/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
   static const String route = '/login';
   static const String name = 'login';
 
-  static Widget builder(BuildContext _, GoRouterState __) {
+  static Widget builder(BuildContext _, GoRouterState _) {
     return BlocProvider(create: (_) => LoginBloc(Repositories.auth), child: const LoginScreen._());
   }
 
@@ -41,7 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: theme.scaffoldBackgroundColor,
           body: BlocConsumer<LoginBloc, LoginState>(
             listener: (context, state) {
               state.maybeWhen(
@@ -70,10 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Container(
                           height: 80,
                           width: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.blueAccent.withValues(alpha: 0.1),
-                            shape: BoxShape.circle,
-                          ),
+                          decoration: BoxDecoration(color: context.colorScheme.surface, shape: BoxShape.circle),
                           child: const Icon(Icons.auto_awesome, color: Colors.blueAccent, size: 40),
                         ),
                         const SizedBox(height: 32),
@@ -110,12 +106,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormField(
                           controller: _usernameController,
                           enabled: !isLoading,
-                          style: GoogleFonts.outfit(),
+                          style: GoogleFonts.outfit(color: context.colorScheme.onSurface),
+
                           decoration: InputDecoration(
                             hintText: 'nombre@ejemplo.com',
-                            prefixIcon: const Icon(Icons.person_outline, size: 20),
+                            prefixIcon: Icon(Icons.person_outline, size: 20, color: context.colorScheme.primary),
                             filled: true,
-                            fillColor: Colors.white,
+                            // fillColor: context.colorScheme.surface,
                             contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -165,10 +162,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           obscureText: !_isPasswordVisible,
                           enabled: !isLoading,
-                          style: GoogleFonts.outfit(),
+                          style: GoogleFonts.outfit(color: context.colorScheme.onSurface),
+
                           decoration: InputDecoration(
                             hintText: '••••••••',
-                            prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                            prefixIcon: Icon(Icons.lock_outline, size: 20, color: context.colorScheme.primary),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isPasswordVisible ? Icons.visibility_off : Icons.visibility,

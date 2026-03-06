@@ -234,7 +234,7 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
                     child: Image.network(
                       widget.pokemon.spriteUrl,
                       fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => const PokeBallIcon(size: 32),
+                      errorBuilder: (_, _, _) => const PokeBallIcon(size: 32),
                     ),
                   ),
                 ),
@@ -271,7 +271,10 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
                   right: 0,
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    decoration: BoxDecoration(color: Theme.of(context).cardColor.withValues(alpha: 0.5)),
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.onSurface.withValues(alpha: 0.5),
+                      borderRadius: borderRadius16,
+                    ),
                     child: Text(
                       _capitalize(widget.pokemon.name),
                       textAlign: TextAlign.center,

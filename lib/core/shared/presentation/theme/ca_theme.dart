@@ -24,6 +24,7 @@ class CATheme {
       primary: Palette.primaryLight,
       secondary: Palette.secondaryLight,
       primaryContainer: Palette.primaryLight,
+      onSecondary: Palette.softBlue,
       tertiary: Palette.cyan,
     ),
   );
@@ -36,7 +37,7 @@ class CATheme {
     textTheme: const TextTheme(bodyLarge: TextStyle(color: Palette.white)),
     colorScheme: const ColorScheme.dark(
       surface: Palette.white,
-      onSurface: Palette.white,
+      onSurface: Palette.black,
       primary: Palette.primaryDark,
       secondary: Palette.secondaryDark,
       onSecondary: Palette.white,

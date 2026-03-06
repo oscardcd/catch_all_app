@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
   static const String route = '/';
   static const String name = 'home';
 
-  static Widget builder(BuildContext _, GoRouterState __) {
+  static Widget builder(BuildContext _, GoRouterState _) {
     return const HomeScreen();
   }
 

@@ -222,7 +222,7 @@ class _FavoriteCarouselCard extends StatelessWidget {
                     child: Image.network(
                       pokemon.spriteUrl,
                       fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => const Icon(Icons.catching_pokemon, color: Colors.white24, size: 50),
+                      errorBuilder: (_, _, _) => const Icon(Icons.catching_pokemon, color: Colors.white24, size: 50),
                     ),
                   ),
                 ),

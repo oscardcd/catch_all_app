@@ -1,8 +1,5 @@
 import 'dart:math';
 import 'package:catch_all_app/core/core.dart';
-import 'package:catch_all_app/core/injector/injector.dart';
-import 'package:catch_all_app/core/shared/presentation/theme/palette.dart';
-import 'package:catch_all_app/core/shared/presentation/widgets/loader_widget.dart';
 import 'package:catch_all_app/domain/entities/pokemon.dart';
 import 'package:catch_all_app/ui/pokemon_details/bloc/pokemon_cubit/pokemon_cubit.dart';
 import 'package:flutter/material.dart';

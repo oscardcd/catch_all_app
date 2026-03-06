@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:catch_all_app/core/core.dart';
 import 'package:catch_all_app/ui/home/bloc/home_bloc.dart';
 import 'package:catch_all_app/ui/ui.dart';
@@ -186,7 +185,11 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
       },
       child: GestureDetector(
         onTap: () {
-          context.pushNamed(PokemonDetailScreen.name, pathParameters: {'name': widget.pokemon.name});
+          context.pushNamed(
+            PokemonDetailScreen.name,
+            pathParameters: {'name': widget.pokemon.name},
+            extra: widget.pokemon.id,
+          );
         },
         onLongPress: widget.onFavoriteToggle,
         child: Container(
@@ -194,7 +197,7 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
           height: 82,
           margin: edgeInsets4,
           decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).cardColor.withValues(alpha: 0.4),
             borderRadius: borderRadius16,
             border: Border.all(
               color: widget.isFavorite
@@ -227,15 +230,17 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
                     ),
                   ),
                 ),
+
                 // Pokemon image
                 Positioned.fill(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Image.network(
-                      widget.pokemon.spriteUrl,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, _, _) => const PokeBallIcon(size: 32),
-                    ),
+                  child: Image.network(
+                    'https://img.pokemondb.net/sprites/home/normal/${widget.pokemon.name.toLowerCase()}.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) => const PokeBallIcon(size: 24),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return PokeBallIcon();
+                    },
                   ),
                 ),
                 // Pokemon ID
@@ -256,12 +261,17 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
                   Positioned(
                     top: 4,
                     right: 6,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 4)],
+                    child: GestureDetector(
+                      onTap: widget.onFavoriteToggle,
+                      behavior: HitTestBehavior.opaque,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 4)],
+                        ),
+                        child: const Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 14),
                       ),
-                      child: const Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 14),
                     ),
                   ),
                 // Name label at bottom (Glassmorphism look)
@@ -272,7 +282,7 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     decoration: BoxDecoration(
-                      color: context.colorScheme.onSurface.withValues(alpha: 0.5),
+                      color: context.colorScheme.onPrimary.withValues(alpha: 0.7),
                       borderRadius: borderRadius16,
                     ),
                     child: Text(
@@ -282,7 +292,7 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
                       style: GoogleFonts.outfit(
                         fontSize: 8,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: context.colorScheme.surface,
                         letterSpacing: 0.2,
                       ),
                     ),

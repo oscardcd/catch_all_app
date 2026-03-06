@@ -149,96 +149,139 @@ class _FavoriteCarouselCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isActive
-              ? const Color(0xFFFFD700).withValues(alpha: 0.8)
-              : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06)),
-          width: isActive ? 2.0 : 1.0,
-        ),
-        boxShadow: [
-          if (isActive)
-            BoxShadow(color: const Color(0xFFFFD700).withValues(alpha: 0.3), blurRadius: 15, spreadRadius: 1)
-          else
-            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2)),
-        ],
-      ),
-      child: Stack(
-        children: [
-          // Background pokeball watermark
-          Positioned(
-            right: -10,
-            bottom: -10,
-            child: Opacity(
-              opacity: 0.06,
-              child: Icon(Icons.catching_pokemon, size: 80, color: isActive ? const Color(0xFFFFD700) : Colors.white),
-            ),
+    return GestureDetector(
+      onLongPress: () => _showRemoveConfirmation(context),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isActive
+                ? const Color(0xFFFFD700).withValues(alpha: 0.8)
+                : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06)),
+            width: isActive ? 2.0 : 1.0,
           ),
-          // Content
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ID + star badge
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: isActive
-                            ? const Color(0xFFFFD700).withValues(alpha: 0.15)
-                            : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '#${pokemon.id.toString().padLeft(3, '0')}',
-                        style: GoogleFonts.outfit(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: isActive ? const Color(0xFFFFD700) : Colors.white38,
+          boxShadow: [
+            if (isActive)
+              BoxShadow(color: const Color(0xFFFFD700).withValues(alpha: 0.3), blurRadius: 15, spreadRadius: 1)
+            else
+              BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2)),
+          ],
+        ),
+        child: Stack(
+          children: [
+            // Background pokeball watermark
+            Positioned(
+              right: -10,
+              bottom: -10,
+              child: Opacity(
+                opacity: 0.06,
+                child: Icon(Icons.catching_pokemon, size: 80, color: isActive ? const Color(0xFFFFD700) : Colors.white),
+              ),
+            ),
+            // Content
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ID + star badge
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: isActive
+                              ? const Color(0xFFFFD700).withValues(alpha: 0.15)
+                              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '#${pokemon.id.toString().padLeft(3, '0')}',
+                          style: GoogleFonts.outfit(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: isActive ? const Color(0xFFFFD700) : Colors.white38,
+                          ),
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: onRemove,
-                      child: Container(
-                        width: 26,
-                        height: 26,
-                        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.06), shape: BoxShape.circle),
-                        child: const Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 14),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: onRemove,
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.1), shape: BoxShape.circle),
+                          child: const Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 16),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Pokemon image
+                  Expanded(
+                    child: Center(
+                      child: Image.network(
+                        pokemon.spriteUrl,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, _, _) => const Icon(Icons.catching_pokemon, color: Colors.white24, size: 50),
                       ),
                     ),
-                  ],
-                ),
-                // Pokemon image
-                Expanded(
-                  child: Center(
-                    child: Image.network(
-                      pokemon.spriteUrl,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, _, _) => const Icon(Icons.catching_pokemon, color: Colors.white24, size: 50),
+                  ),
+                  // Name
+                  Text(
+                    _capitalize(pokemon.name),
+                    style: GoogleFonts.outfit(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: isActive
+                          ? (isDark ? Colors.white : Palette.primaryLight)
+                          : (isDark ? Colors.white54 : Colors.black54),
                     ),
                   ),
-                ),
-                // Name
-                Text(
-                  _capitalize(pokemon.name),
-                  style: GoogleFonts.outfit(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: isActive
-                        ? (isDark ? Colors.white : Palette.primaryLight)
-                        : (isDark ? Colors.white54 : Colors.black54),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showRemoveConfirmation(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).cardColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Text('¿Quitar de favoritos?', style: GoogleFonts.outfit(fontWeight: FontWeight.w800)),
+        content: Text(
+          '¿Estás seguro de que quieres eliminar a ${_capitalize(pokemon.name)} de tus favoritos?',
+          style: GoogleFonts.outfit(color: isDark ? Colors.white70 : Colors.black54),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancelar',
+              style: GoogleFonts.outfit(color: Colors.grey, fontWeight: FontWeight.w600),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              onRemove();
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF4444),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: Text('Sí, quitar', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
           ),
         ],
       ),

@@ -27,6 +27,13 @@ class PokemonRepositoryImpl implements PokemonRepository {
 
   @override
   Future<AllPokemons?> getPokemons(int limitPokemons, int offset) async {
+    // 1. Verificar si ya tenemos los pokemons solicitados en local storage (Página completa)
+    final cachedSlice = await _getCachedSlice(limitPokemons, offset, strict: true);
+    if (cachedSlice != null) {
+      return cachedSlice;
+    }
+
+    // 2. Si no están en local o la página está incompleta, llamar a la API
     try {
       final result = await _api.getAllPokemons(offset, limitPokemons);
 
@@ -38,11 +45,11 @@ class PokemonRepositoryImpl implements PokemonRepository {
         return data;
       }
 
-      // If it's a failure (e.g. 404, 500), try to load from cache
-      return await _getCachedSlice(limitPokemons, offset);
+      // Si la API falla, intentamos devolver lo que tengamos aunque sea parcial
+      return await _getCachedSlice(limitPokemons, offset, strict: false);
     } catch (e) {
-      // On any error (connection, etc.), try to load from cache
-      return await _getCachedSlice(limitPokemons, offset);
+      // En caso de error de conexión, devolvemos lo que tengamos en local
+      return await _getCachedSlice(limitPokemons, offset, strict: false);
     }
   }
 
@@ -69,17 +76,26 @@ class PokemonRepositoryImpl implements PokemonRepository {
     await _localStorage.put(_pokemonBox, _allPokemonsKey, jsonEncode(updatedData.toJson()));
   }
 
-  Future<AllPokemons?> _getCachedSlice(int limit, int offset) async {
+  Future<AllPokemons?> _getCachedSlice(int limit, int offset, {bool strict = false}) async {
     final cached = await _getCachedPokemons();
     if (cached == null) return null;
 
     final results = cached.results;
-    if (results == null || offset >= results.length) {
-      return cached.copyWith(results: []);
-    }
+    if (results == null || results.isEmpty) return null;
+
+    if (offset >= results.length) return null;
 
     final end = (offset + limit).clamp(0, results.length);
     final slice = results.sublist(offset, end);
+
+    // Si es estricto, solo devolvemos si tenemos la página solicitada completa
+    // O si ya tenemos todos los pokemons que existen según el count total
+    if (strict && slice.length < limit) {
+      final totalCount = cached.count ?? 0;
+      if (results.length < totalCount) {
+        return null; // Necesitamos cargar más de la API
+      }
+    }
 
     return cached.copyWith(results: slice);
   }

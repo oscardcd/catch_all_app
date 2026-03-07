@@ -1,6 +1,7 @@
 import 'package:catch_all_app/core/core.dart';
 import 'package:catch_all_app/ui/home/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:catch_all_app/i18n/strings.g.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// A snapping horizontal carousel that highlights the center item.
@@ -122,7 +123,7 @@ class _FavoritesCarouselSectionState extends State<FavoritesCarouselSection> {
           Icon(Icons.auto_awesome_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.15), size: 48),
           const SizedBox(height: 12),
           Text(
-            'Mantén presionado un Pokémon\npara añadirlo a favoritos',
+            t.home.emptyFavorites,
             textAlign: TextAlign.center,
             style: GoogleFonts.outfit(
               fontWeight: FontWeight.w500,
@@ -256,16 +257,16 @@ class _FavoriteCarouselCard extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Text('¿Quitar de favoritos?', style: GoogleFonts.outfit(fontWeight: FontWeight.w800)),
+        title: Text(t.home.removeFavoriteTitle, style: GoogleFonts.outfit(fontWeight: FontWeight.w800)),
         content: Text(
-          '¿Estás seguro de que quieres eliminar a ${_capitalize(pokemon.name)} de tus favoritos?',
+          t.home.removeFavoriteContent(name: _capitalize(pokemon.name)),
           style: GoogleFonts.outfit(color: isDark ? Colors.white70 : Colors.black54),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              'Cancelar',
+              t.common.cancel,
               style: GoogleFonts.outfit(color: Colors.grey, fontWeight: FontWeight.w600),
             ),
           ),
@@ -279,7 +280,7 @@ class _FavoriteCarouselCard extends StatelessWidget {
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            child: Text('Sí, quitar', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+            child: Text(t.home.removeConfirm, style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
           ),
         ],
       ),

@@ -1,4 +1,9 @@
 {
+    "common": {
+        "cancel": "Cancel",
+        "errorTitle": "Something went wrong",
+        "retry": "Retry"
+    },
     "login": {
         "loginSuccessful": "Login successful",
         "error": "Error: $message",
@@ -18,5 +23,27 @@
         "orContinueWith": "Or continue with",
         "noAccount": "Don't have an account? ",
         "signUp": "Sign Up"
+    },
+    "home": {
+        "trainer": "Trainer",
+        "welcome": "Hello, $name!",
+        "subtitle": "Who shall we catch today?",
+        "settingsTitle": "Theme Settings",
+        "lightMode": "Light Mode",
+        "darkMode": "Dark Mode",
+        "systemMode": "System",
+        "logout": "Logout",
+        "favorites": "Favorites",
+        "pokemons": "Pokémons",
+        "emptyFavorites": "Long press a Pokémon\nto add it to favorites",
+        "removeFavoriteTitle": "Remove from favorites?",
+        "removeFavoriteContent": "Are you sure you want to remove $name from your favorites?",
+        "removeConfirm": "Yes, remove"
+    },
+    "pokemonDetails": {
+        "height": "HEIGHT",
+        "weight": "WEIGHT",
+        "abilities": "Abilities",
+        "baseStats": "Base Stats"
     }
 }

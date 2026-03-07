@@ -1,5 +1,6 @@
 import 'package:catch_all_app/core/core.dart';
 import 'package:catch_all_app/ui/home/bloc/home_bloc.dart';
+import 'package:catch_all_app/i18n/strings.g.dart';
 import 'package:catch_all_app/ui/home/widgets/pokemon_grid_section.dart';
 import 'package:catch_all_app/ui/home/widgets/favorites_carousel_section.dart';
 import 'package:flutter/material.dart';
@@ -75,13 +76,13 @@ class _HomeView extends StatelessWidget {
             future: Repositories.auth.getCurrentUser(),
             builder: (context, snapshot) {
               final user = snapshot.data;
-              final name = user?.displayName ?? 'Entrenador';
+              final name = user?.displayName ?? t.home.trainer;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '¡Hola, $name!',
+                    t.home.welcome(name: name),
                     style: GoogleFonts.outfit(
                       fontSize: 24,
                       color: Theme.of(context).colorScheme.surface,
@@ -90,7 +91,7 @@ class _HomeView extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '¿A quién atraparemos hoy?',
+                    t.home.subtitle,
                     style: GoogleFonts.outfit(
                       fontSize: 14,
                       color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
@@ -125,7 +126,7 @@ class _HomeView extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Ajustes de Tema',
+                      t.home.settingsTitle,
                       style: GoogleFonts.outfit(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -135,21 +136,21 @@ class _HomeView extends StatelessWidget {
                     const SizedBox(height: 24),
                     _buildThemeOption(
                       context,
-                      'Modo Claro',
+                      t.home.lightMode,
                       Icons.light_mode_rounded,
                       ThemeMode.light,
                       currentMode == ThemeMode.light,
                     ),
                     _buildThemeOption(
                       context,
-                      'Modo Oscuro',
+                      t.home.darkMode,
                       Icons.dark_mode_rounded,
                       ThemeMode.dark,
                       currentMode == ThemeMode.dark,
                     ),
                     _buildThemeOption(
                       context,
-                      'Sistema',
+                      t.home.systemMode,
                       Icons.settings_suggest_rounded,
                       ThemeMode.system,
                       currentMode == ThemeMode.system,
@@ -158,7 +159,7 @@ class _HomeView extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.logout_rounded, color: Colors.redAccent),
                       title: Text(
-                        'Cerrar Sesión',
+                        t.home.logout,
                         style: GoogleFonts.outfit(color: Colors.redAccent, fontWeight: FontWeight.w600),
                       ),
                       onTap: () async {
@@ -263,7 +264,7 @@ class _HomeContent extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            'Favoritos',
+            t.home.favorites,
             style: GoogleFonts.outfit(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -321,7 +322,7 @@ class _ErrorView extends StatelessWidget {
             const Icon(Icons.error_outline, color: Color(0xFFFF4444), size: 56),
             const SizedBox(height: 16),
             Text(
-              'Algo salió mal',
+              t.common.errorTitle,
               style: GoogleFonts.outfit(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -340,7 +341,7 @@ class _ErrorView extends StatelessWidget {
                 context.read<HomeBloc>().add(const HomeEvent.loadInitialPokemons());
               },
               icon: const Icon(Icons.refresh),
-              label: Text('Reintentar', style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
+              label: Text(t.common.retry, style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF4444),
                 foregroundColor: Colors.white,

@@ -1,0 +1,22 @@
+{
+    "login": {
+        "loginSuccessful": "Inicio de sesión exitoso",
+        "error": "Error: $message",
+        "welcomeBack": "Bienvenido de nuevo",
+        "enterCredentials": "Ingresa tus credenciales para continuar",
+        "user": "Usuario",
+        "emailHint": "nombre@ejemplo.com",
+        "emailRequired": "Por favor ingresa tu correo",
+        "emailInvalid": "Por favor ingresa un correo válido",
+        "password": "Contraseña",
+        "passwordRequired": "Por favor ingresa tu contraseña",
+        "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+        "passwordUppercase": "La contraseña debe tener al menos una mayúscula",
+        "passwordNumber": "La contraseña debe tener al menos un número",
+        "forgotPassword": "¿Olvidaste tu contraseña?",
+        "loginButton": "Iniciar Sesión",
+        "orContinueWith": "O continúa con",
+        "noAccount": "¿No tienes una cuenta? ",
+        "signUp": "Regístrate"
+    }
+}

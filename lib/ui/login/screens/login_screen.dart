@@ -1,4 +1,5 @@
 import 'package:catch_all_app/core/core.dart';
+import 'package:catch_all_app/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -45,11 +46,11 @@ class _LoginScreenState extends State<LoginScreen> {
             listener: (context, state) {
               state.maybeWhen(
                 loginSuccess: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Inicio de sesión exitoso')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t.login.loginSuccessful)));
                   context.go('/');
                 },
                 failure: (message) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $message')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t.login.error(message: message))));
                 },
                 orElse: () {},
               );
@@ -74,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 32),
                         Text(
-                          'Bienvenido de nuevo',
+                          t.login.welcomeBack,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.outfit(
                             fontSize: 28,
@@ -84,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Ingresa tus credenciales para continuar',
+                          t.login.enterCredentials,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.outfit(
                             fontSize: 16,
@@ -95,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // Email / User Field
                         Text(
-                          'Usuario',
+                          t.login.user,
                           style: GoogleFonts.outfit(
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
@@ -109,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: GoogleFonts.outfit(color: context.colorScheme.onSurface),
 
                           decoration: InputDecoration(
-                            hintText: 'nombre@ejemplo.com',
+                            hintText: t.login.emailHint,
                             prefixIcon: Icon(Icons.person_outline, size: 20, color: context.colorScheme.primary),
                             filled: true,
                             // fillColor: context.colorScheme.surface,
@@ -137,11 +138,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa tu correo';
+                              return t.login.emailRequired;
                             }
                             final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                             if (!emailRegex.hasMatch(value)) {
-                              return 'Por favor ingresa un correo válido';
+                              return t.login.emailInvalid;
                             }
                             return null;
                           },
@@ -150,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // Password Field
                         Text(
-                          'Contraseña',
+                          t.login.password,
                           style: GoogleFonts.outfit(
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
@@ -204,16 +205,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa tu contraseña';
+                              return t.login.passwordRequired;
                             }
                             if (value.length < 6) {
-                              return 'La contraseña debe tener al menos 6 caracteres';
+                              return t.login.passwordTooShort;
                             }
                             if (!value.contains(RegExp(r'[A-Z]'))) {
-                              return 'La contraseña debe tener al menos una mayúscula';
+                              return t.login.passwordUppercase;
                             }
                             if (!value.contains(RegExp(r'[0-9]'))) {
-                              return 'La contraseña debe tener al menos un número';
+                              return t.login.passwordNumber;
                             }
                             return null;
                           },
@@ -225,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: TextButton(
                             onPressed: () {},
                             child: Text(
-                              '¿Olvidaste tu contraseña?',
+                              t.login.forgotPassword,
                               style: GoogleFonts.outfit(
                                 color: theme.colorScheme.primary,
                                 fontWeight: FontWeight.w600,
@@ -268,7 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 )
                               : Text(
-                                  'Iniciar Sesión',
+                                  t.login.loginButton,
                                   style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                         ),
@@ -282,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: Text(
-                                'O continúa con',
+                                t.login.orContinueWith,
                                 style: GoogleFonts.outfit(color: const Color(0xFF94A3B8), fontSize: 14),
                               ),
                             ),
@@ -351,13 +352,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '¿No tienes una cuenta? ',
+                              t.login.noAccount,
                               style: GoogleFonts.outfit(color: const Color(0xFF64748B), fontSize: 14),
                             ),
                             GestureDetector(
                               onTap: () {},
                               child: Text(
-                                'Regístrate',
+                                t.login.signUp,
                                 style: GoogleFonts.outfit(
                                   color: Colors.blueAccent,
                                   fontWeight: FontWeight.bold,

@@ -156,6 +156,21 @@ El sistema de acceso está diseñado en capas:
 2. **Navegación**: Se utiliza `GoRouter` con lógica de redirección (`redirect`) que detecta automáticamente si el usuario tiene una sesión activa para enviarlo al Home o al Login.
 3. **Persistencia de Sesión**: Los datos del usuario (nombre, ID) se mantienen de forma persistente para evitar re-autenticaciones innecesarias.
 
+## 🌐 Internacionalización (i18n)
+La aplicación cuenta con soporte multi-idioma utilizando el paquete **[slang](https://pub.dev/packages/slang)**. 
+
+### 🚀 Cómo funciona
+- **Configuración**: Los archivos de traducción se encuentran en `lib/i18n/` en formato JSON (`strings_en.i18n.json` y `strings_es.i18n.json`).
+- **Generación de Código**: Al modificar las traducciones, es necesario regenerar el código tipado:
+  ```bash
+  flutter pub run build_runner build --delete-conflicting-outputs
+  ```
+- **Uso en Código**: Se utiliza la variable global `t` (o `context.t` para reactividad) para acceder a los textos:
+  ```dart
+  Text(t.home.welcome(name: 'Ash'))
+  ```
+- **Idiomas Soportados**: Actualmente incluye **Inglés (en)** y **Español (es)**. El sistema detecta automáticamente el idioma del dispositivo al iniciar.
+
 ## 🛠 Decisiones Técnicas
 - **PokeAPI (API Externa)**: Seleccionada por ser el estándar de la industria para este tipo de aplicaciones, ofreciendo una estructura de datos rica ideal para demostrar Clean Architecture.
 - **Hive (Persistencia Local)**: Se eligió por su alto rendimiento, facilidad de implementación sin esquemas complejos de SQL y soporte nativo para almacenamiento NoSQL.
@@ -165,7 +180,7 @@ El sistema de acceso está diseñado en capas:
 - [ ] **Reglas de Negocio**: agregar reglas para hacer interactiva la app.
 - [ ] **Paginación Optimizada**: Mejorar el control de carga infinita para evitar saltos en el scroll.
 - [ ] **Cobertura de Tests**: Alcanzar un 90%+ de cobertura de pruebas unitarias y de integración.
-- [ ] **i18n**: Soporte para múltiples idiomas (Español, Inglés, Japonés).
+- [x] **i18n**: Soporte para múltiples idiomas (Español, Inglés).
 - [ ] **UI/UX Premium**: Implementar Shimmer effects avanzados y animaciones Hero fluidas para todas las imágenes.
 - [ ] **Búsqueda y Filtros**: Añadir capacidad de búsqueda por nombre e ID y filtrado por tipo de Pokémon.
 

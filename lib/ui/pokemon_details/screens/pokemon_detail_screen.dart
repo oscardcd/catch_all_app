@@ -6,6 +6,7 @@ import 'package:catch_all_app/ui/home/screens/screens.dart';
 import 'package:catch_all_app/ui/pokemon_details/bloc/pokemon_cubit/pokemon_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:catch_all_app/i18n/strings.g.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -224,11 +225,16 @@ class _PokemonDetailView extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            _buildInfoItem(context, '${(pokemon.height ?? 0) / 10} m', 'HEIGHT', Icons.height),
+                            _buildInfoItem(
+                              context,
+                              '${(pokemon.height ?? 0) / 10} m',
+                              t.pokemonDetails.height,
+                              Icons.height,
+                            ),
                             _buildInfoItem(
                               context,
                               '${(pokemon.weight ?? 0) / 10} kg',
-                              'WEIGHT',
+                              t.pokemonDetails.weight,
                               Icons.monitor_weight_outlined,
                             ),
                           ],
@@ -237,7 +243,10 @@ class _PokemonDetailView extends StatelessWidget {
                         const SizedBox(height: 32),
 
                         // Abilities
-                        Text('Abilities', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800)),
+                        Text(
+                          t.pokemonDetails.abilities,
+                          style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800),
+                        ),
                         const SizedBox(height: 12),
                         Wrap(
                           spacing: 8,
@@ -265,7 +274,10 @@ class _PokemonDetailView extends StatelessWidget {
                         const SizedBox(height: 40),
 
                         // Stats
-                        Text('Base Stats', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800)),
+                        Text(
+                          t.pokemonDetails.baseStats,
+                          style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800),
+                        ),
                         const SizedBox(height: 24),
                         ...?pokemon.stats?.map((s) {
                           final statName = s.stat?.name ?? '';

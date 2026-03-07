@@ -1,0 +1,9 @@
+base_locale: en
+fallback_strategy: base_locale
+input_directory: lib/i18n
+input_file_pattern: .i18n.json
+output_directory: lib/i18n
+output_file_name: strings.g.dart
+# This tells slang that the base locale file also has a suffix
+# Locale handling is automatically derived from the file name if it matches the pattern
+flutter_integration: true

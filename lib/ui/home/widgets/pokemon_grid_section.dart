@@ -3,6 +3,7 @@ import 'package:catch_all_app/core/core.dart';
 import 'package:catch_all_app/ui/home/bloc/home_bloc.dart';
 import 'package:catch_all_app/ui/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:catch_all_app/i18n/strings.g.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -73,7 +74,7 @@ class _PokemonGridSectionState extends State<PokemonGridSection> {
           child: Row(
             children: [
               Text(
-                'Pokémons',
+                t.home.pokemons,
                 style: GoogleFonts.outfit(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,

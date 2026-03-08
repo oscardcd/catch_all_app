@@ -7,6 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:catch_all_app/ui/home/cubit/catch_pokemon_cubit/catch_pokemon_cubit.dart';
+import 'package:catch_all_app/ui/home/cubit/catch_pokemon_cubit/catch_pokemon_state.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -19,9 +22,28 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeBloc(Repositories.pokemonRepository)..add(const HomeEvent.loadInitialPokemons()),
-      child: const _HomeView(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => HomeBloc(Repositories.pokemonRepository)..add(const HomeEvent.loadInitialPokemons()),
+        ),
+        BlocProvider(create: (_) => CatchPokemonCubit(Repositories.pokemonRepository)),
+      ],
+      child: BlocListener<CatchPokemonCubit, CatchPokemonState>(
+        listener: (context, state) {
+          state.maybeWhen(
+            success: (pokemonId) {
+              context.read<HomeBloc>().add(HomeEvent.catchPokemon(pokemonId));
+              context.read<CatchPokemonCubit>().reset();
+            },
+            failure: (error) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+            },
+            orElse: () {},
+          );
+        },
+        child: const _HomeView(),
+      ),
     );
   }
 }
@@ -42,13 +64,13 @@ class _HomeView extends StatelessWidget {
                   return state.when(
                     initial: () => const LoaderWidget(),
                     loading: () => const LoaderWidget(),
-                    loaded: (pokemons, favorites, hasMore, offset) => _HomeContent(
+                    loaded: (pokemons, favorites, caught, hasMore, offset) => _HomeContent(
                       pokemons: pokemons,
                       favoriteIds: favorites,
                       hasMore: hasMore,
                       currentOffset: offset,
                     ),
-                    loadingMore: (pokemons, favorites, offset) => _HomeContent(
+                    loadingMore: (pokemons, favorites, caught, offset) => _HomeContent(
                       pokemons: pokemons,
                       favoriteIds: favorites,
                       hasMore: true,

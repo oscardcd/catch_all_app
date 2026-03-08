@@ -10,10 +10,15 @@ part 'home_bloc.freezed.dart';
 
 /// Lightweight entry from the list endpoint – only name & id (derived from url).
 class PokemonEntry {
-  const PokemonEntry({required this.id, required this.name});
+  const PokemonEntry({required this.id, required this.name, this.isCaught = false});
 
   final int id;
   final String name;
+  final bool isCaught;
+
+  PokemonEntry copyWith({bool? isCaught}) {
+    return PokemonEntry(id: id, name: name, isCaught: isCaught ?? this.isCaught);
+  }
 
   String get spriteUrl =>
       'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png';
@@ -24,6 +29,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<_LoadInitialPokemons>(_onLoadInitialPokemons);
     on<_LoadMorePokemons>(_onLoadMorePokemons);
     on<_ToggleFavorite>(_onToggleFavorite);
+    on<_CatchPokemon>(_onCatchPokemon);
   }
 
   final PokemonRepository _pokemonRepository;
@@ -36,11 +42,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       final result = await _pokemonRepository.getPokemons(_initialLimit, 0);
       final count = result?.count ?? 0;
-      final entries = _buildEntries(result?.results ?? [], 0);
+      final entries = _buildEntries(result?.results ?? [], 0, const []);
       emit(
         HomeState.loaded(
           allPokemons: entries,
           favoriteIds: const [],
+          caughtIds: const [],
           hasMore: entries.length < count,
           currentOffset: entries.length,
         ),
@@ -58,6 +65,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       HomeState.loadingMore(
         allPokemons: currentState.allPokemons,
         favoriteIds: currentState.favoriteIds,
+        caughtIds: currentState.caughtIds,
         currentOffset: currentState.currentOffset,
       ),
     );
@@ -65,12 +73,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       final result = await _pokemonRepository.getPokemons(_pageSize, currentState.currentOffset);
       final count = result?.count ?? 0;
-      final newEntries = _buildEntries(result?.results ?? [], currentState.currentOffset);
+      final newEntries = _buildEntries(result?.results ?? [], currentState.currentOffset, currentState.caughtIds);
       final merged = [...currentState.allPokemons, ...newEntries];
       emit(
         HomeState.loaded(
           allPokemons: merged,
           favoriteIds: currentState.favoriteIds,
+          caughtIds: currentState.caughtIds,
           hasMore: merged.length < count,
           currentOffset: merged.length,
         ),
@@ -81,6 +90,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         HomeState.loaded(
           allPokemons: currentState.allPokemons,
           favoriteIds: currentState.favoriteIds,
+          caughtIds: currentState.caughtIds,
           hasMore: true,
           currentOffset: currentState.currentOffset,
         ),
@@ -89,51 +99,107 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   FutureOr<void> _onToggleFavorite(_ToggleFavorite event, Emitter<HomeState> emit) {
-    final currentState = state;
-    List<int> favorites;
-    List<PokemonEntry> allPokemons;
-    bool hasMore;
-    int currentOffset;
+    state.maybeWhen(
+      loaded: (allPokemons, favoriteIds, caughtIds, hasMore, currentOffset) {
+        if (!caughtIds.contains(event.pokemonId)) return;
 
-    if (currentState is _Loaded) {
-      favorites = currentState.favoriteIds;
-      allPokemons = currentState.allPokemons;
-      hasMore = currentState.hasMore;
-      currentOffset = currentState.currentOffset;
-    } else if (currentState is _LoadingMore) {
-      favorites = currentState.favoriteIds;
-      allPokemons = currentState.allPokemons;
-      hasMore = true;
-      currentOffset = currentState.currentOffset;
-    } else {
-      return null;
-    }
+        final updated = Set<int>.from(favoriteIds);
+        if (updated.contains(event.pokemonId)) {
+          updated.remove(event.pokemonId);
+        } else {
+          updated.add(event.pokemonId);
+        }
 
-    final updated = Set<int>.from(favorites);
-    if (updated.contains(event.pokemonId)) {
-      updated.remove(event.pokemonId);
-    } else {
-      updated.add(event.pokemonId);
-    }
+        emit(
+          HomeState.loaded(
+            allPokemons: allPokemons,
+            favoriteIds: updated.toList(),
+            caughtIds: caughtIds,
+            hasMore: hasMore,
+            currentOffset: currentOffset,
+          ),
+        );
+      },
+      loadingMore: (allPokemons, favoriteIds, caughtIds, currentOffset) {
+        if (!caughtIds.contains(event.pokemonId)) return;
 
-    emit(
-      HomeState.loaded(
-        allPokemons: allPokemons,
-        favoriteIds: updated.toList(),
-        hasMore: hasMore,
-        currentOffset: currentOffset,
-      ),
+        final updated = Set<int>.from(favoriteIds);
+        if (updated.contains(event.pokemonId)) {
+          updated.remove(event.pokemonId);
+        } else {
+          updated.add(event.pokemonId);
+        }
+
+        emit(
+          HomeState.loadingMore(
+            allPokemons: allPokemons,
+            favoriteIds: updated.toList(),
+            caughtIds: caughtIds,
+            currentOffset: currentOffset,
+          ),
+        );
+      },
+      orElse: () {},
     );
   }
 
-  List<PokemonEntry> _buildEntries(List<dynamic> results, int offset) {
+  FutureOr<void> _onCatchPokemon(_CatchPokemon event, Emitter<HomeState> emit) {
+    state.maybeWhen(
+      loaded: (allPokemons, favoriteIds, caughtIds, hasMore, currentOffset) {
+        if (caughtIds.contains(event.pokemonId)) return; // Already in state
+
+        final updatedCaught = Set<int>.from(caughtIds)..add(event.pokemonId);
+
+        final updatedAll = allPokemons.map((p) {
+          if (p.id == event.pokemonId) {
+            return p.copyWith(isCaught: true);
+          }
+          return p;
+        }).toList();
+
+        emit(
+          HomeState.loaded(
+            allPokemons: updatedAll,
+            favoriteIds: favoriteIds,
+            caughtIds: updatedCaught.toList(),
+            hasMore: hasMore,
+            currentOffset: currentOffset,
+          ),
+        );
+      },
+      loadingMore: (allPokemons, favoriteIds, caughtIds, currentOffset) {
+        if (caughtIds.contains(event.pokemonId)) return; // Already in state
+
+        final updatedCaught = Set<int>.from(caughtIds)..add(event.pokemonId);
+
+        final updatedAll = allPokemons.map((p) {
+          if (p.id == event.pokemonId) {
+            return p.copyWith(isCaught: true);
+          }
+          return p;
+        }).toList();
+
+        emit(
+          HomeState.loadingMore(
+            allPokemons: updatedAll,
+            favoriteIds: favoriteIds,
+            caughtIds: updatedCaught.toList(),
+            currentOffset: currentOffset,
+          ),
+        );
+      },
+      orElse: () {},
+    );
+  }
+
+  List<PokemonEntry> _buildEntries(List<dynamic> results, int offset, List<int> caughtIds) {
     final entries = <PokemonEntry>[];
     for (var i = 0; i < results.length; i++) {
       final item = results[i];
       final id = offset + i + 1;
       final rawName = item?.name;
       final name = rawName is String ? rawName : 'unknown';
-      entries.add(PokemonEntry(id: id, name: name));
+      entries.add(PokemonEntry(id: id, name: name, isCaught: caughtIds.contains(id)));
     }
     return entries;
   }

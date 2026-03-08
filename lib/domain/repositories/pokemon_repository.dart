@@ -4,4 +4,5 @@ import 'package:catch_all_app/domain/entities/pokemon.dart';
 abstract class PokemonRepository {
   Future<AllPokemons?> getPokemons(int limitPokemons, int offset);
   Future<Pokemon?> getPokemonByName(String name);
+  Future<void> catchPokemon(String name);
 }

@@ -1,12 +1,11 @@
 import 'dart:math';
 import 'package:catch_all_app/core/core.dart';
 import 'package:catch_all_app/ui/home/bloc/home_bloc.dart';
-import 'package:catch_all_app/ui/ui.dart';
+import 'package:catch_all_app/ui/home/cubit/catch_pokemon_cubit/catch_pokemon_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-// Pokemon type color mapping is now centrally managed in Palette.pokemonTypeColors
 
 /// A horizontal scrolling grid with 2 rows, up to 6 pokémon per "column-page".
 class PokemonGridSection extends StatefulWidget {
@@ -32,14 +31,14 @@ class PokemonGridSection extends StatefulWidget {
 }
 
 class _PokemonGridSectionState extends State<PokemonGridSection> {
-  final _scrollController = ScrollController();
+  late final ScrollController _scrollController;
 
   static const int _rows = 3;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
+    _scrollController = ScrollController()..addListener(_onScroll);
   }
 
   void _onScroll() {
@@ -58,13 +57,6 @@ class _PokemonGridSectionState extends State<PokemonGridSection> {
 
   @override
   Widget build(BuildContext context) {
-    // Build columns of _rows items each
-    final columns = <List<PokemonEntry>>[];
-    for (var i = 0; i < widget.pokemons.length; i += _rows) {
-      final end = min(i + _rows, widget.pokemons.length);
-      columns.add(widget.pokemons.sublist(i, end));
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -77,7 +69,7 @@ class _PokemonGridSectionState extends State<PokemonGridSection> {
                 style: GoogleFonts.outfit(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.surface,
+                  color: context.colorScheme.onSurface,
                 ),
               ),
               space8,
@@ -97,38 +89,34 @@ class _PokemonGridSectionState extends State<PokemonGridSection> {
           ),
         ),
         Expanded(
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              if (notification is ScrollEndNotification) {
-                _onScroll();
+          child: ListView.builder(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            padding: edgeInsetsH16,
+            itemCount: (widget.pokemons.length / _rows).ceil() + (widget.hasMore ? 1 : 0),
+            itemBuilder: (context, colIndex) {
+              if (colIndex >= (widget.pokemons.length / _rows).ceil()) {
+                return _buildLoadingColumn();
               }
-              return false;
+
+              final startIndex = colIndex * _rows;
+              final endIndex = min(startIndex + _rows, widget.pokemons.length);
+              final col = widget.pokemons.sublist(startIndex, endIndex);
+
+              return Column(
+                children: List.generate(_rows, (rowIndex) {
+                  if (rowIndex < col.length) {
+                    final pokemon = col[rowIndex];
+                    return _PokemonGridCard(
+                      pokemon: pokemon,
+                      isFavorite: widget.favoriteIds.contains(pokemon.id),
+                      onFavoriteToggle: () => widget.onFavoriteToggle(pokemon.id),
+                    );
+                  }
+                  return const SizedBox(width: 82, height: 82);
+                }),
+              );
             },
-            child: ListView.builder(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              padding: edgeInsetsH16,
-              itemCount: columns.length + (widget.isLoadingMore ? 1 : 0),
-              itemBuilder: (context, colIndex) {
-                if (colIndex == columns.length) {
-                  return _buildLoadingColumn();
-                }
-                final col = columns[colIndex];
-                return Column(
-                  children: List.generate(_rows, (rowIndex) {
-                    if (rowIndex < col.length) {
-                      final pokemon = col[rowIndex];
-                      return _PokemonGridCard(
-                        pokemon: pokemon,
-                        isFavorite: widget.favoriteIds.contains(pokemon.id),
-                        onFavoriteToggle: () => widget.onFavoriteToggle(pokemon.id),
-                      );
-                    }
-                    return const SizedBox(width: 82, height: 82);
-                  }),
-                );
-              },
-            ),
           ),
         ),
       ],
@@ -167,7 +155,7 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
     _scaleAnim = Tween<double>(
       begin: 1.0,
       end: 0.92,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -184,14 +172,23 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
         return Transform.scale(scale: _scaleAnim.value, child: child);
       },
       child: GestureDetector(
+        onTapDown: (_) => _controller.forward(),
+        onTapUp: (_) => _controller.reverse(),
+        onTapCancel: () => _controller.reverse(),
         onTap: () {
-          context.pushNamed(
-            PokemonDetailScreen.name,
-            pathParameters: {'name': widget.pokemon.name},
-            extra: widget.pokemon.id,
-          );
+          if (!widget.pokemon.isCaught) {
+            _showCaptureDialog(context);
+          } else {
+            context.pushNamed('pokemons', pathParameters: {'name': widget.pokemon.name}, extra: widget.pokemon.id);
+          }
         },
-        onLongPress: widget.onFavoriteToggle,
+        onLongPress: () {
+          if (widget.pokemon.isCaught) {
+            widget.onFavoriteToggle();
+          } else {
+            _showUncaughtWarning(context);
+          }
+        },
         child: Container(
           width: 82,
           height: 82,
@@ -208,102 +205,176 @@ class _PokemonGridCardState extends State<_PokemonGridCard> with SingleTickerPro
               width: widget.isFavorite ? 2.0 : 1.0,
             ),
             boxShadow: [
-              if (widget.isFavorite)
-                BoxShadow(color: const Color(0xFFFFD700).withValues(alpha: 0.3), blurRadius: 10, spreadRadius: 1)
-              else
-                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2)),
+              BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
             ],
           ),
-          child: ClipRRect(
-            borderRadius: borderRadius16,
-            child: Stack(
-              children: [
-                // Subtle background pattern or tint
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Colors.white.withValues(alpha: 0.02), Colors.black.withValues(alpha: 0.01)],
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Pokemon image
-                Positioned.fill(
+          child: Stack(
+            children: [
+              Center(
+                child: Hero(
+                  tag: 'pokemon-${widget.pokemon.id}',
                   child: Image.network(
                     'https://img.pokemondb.net/sprites/home/normal/${widget.pokemon.name.toLowerCase()}.png',
                     fit: BoxFit.contain,
+                    color: widget.pokemon.isCaught ? null : Colors.black.withValues(alpha: 0.85),
+                    colorBlendMode: widget.pokemon.isCaught ? null : BlendMode.srcIn,
                     errorBuilder: (context, error, stackTrace) => const PokeBallIcon(size: 24),
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
-                      return PokeBallIcon();
+                      return const PokeBallIcon(size: 24);
                     },
                   ),
                 ),
-                // Pokemon ID
-                Positioned(
-                  top: 6,
-                  left: 8,
+              ),
+              Positioned(
+                top: 6,
+                left: 8,
+                child: Text(
+                  '#${widget.pokemon.id.toString().padLeft(3, '0')}',
+                  style: GoogleFonts.outfit(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withValues(
+                      alpha: 0.2,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 4,
+                left: 8,
+                right: 8,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: context.colorScheme.onSurface, borderRadius: borderRadius16),
                   child: Text(
-                    '#${widget.pokemon.id.toString().padLeft(3, '0')}',
+                    widget.pokemon.isCaught ? _capitalize(widget.pokemon.name) : '???',
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.outfit(
-                      fontSize: 9,
+                      fontSize: 8,
                       fontWeight: FontWeight.w800,
-                      color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
+                      color: context.colorScheme.surface,
                     ),
                   ),
                 ),
-                // Favorite star
-                if (widget.isFavorite)
-                  Positioned(
-                    top: 4,
-                    right: 6,
-                    child: GestureDetector(
-                      onTap: widget.onFavoriteToggle,
-                      behavior: HitTestBehavior.opaque,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 4)],
-                        ),
-                        child: const Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 14),
-                      ),
-                    ),
-                  ),
-                // Name label at bottom (Glassmorphism look)
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    decoration: BoxDecoration(
-                      color: context.colorScheme.onPrimary.withValues(alpha: 0.7),
-                      borderRadius: borderRadius16,
-                    ),
-                    child: Text(
-                      _capitalize(widget.pokemon.name),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.outfit(
-                        fontSize: 8,
-                        fontWeight: FontWeight.w800,
-                        color: context.colorScheme.surface,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  void _showUncaughtWarning(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '¡Captura a este Pokémon antes de añadirlo a favoritos!',
+          style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
+        ),
+        backgroundColor: Palette.pokemonRed,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showCaptureDialog(BuildContext outerContext) {
+    final controller = TextEditingController();
+    final isDark = Theme.of(outerContext).brightness == Brightness.dark;
+
+    showDialog(
+      context: outerContext,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: Theme.of(dialogContext).cardColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Text(
+          '¡Un Pokémon salvaje apareció!',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.outfit(fontWeight: FontWeight.w800, fontSize: 18),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: 120,
+              width: 120,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.05), shape: BoxShape.circle),
+              child: Image.network(
+                widget.pokemon.spriteUrl,
+                color: Colors.black.withValues(alpha: 0.85),
+                colorBlendMode: BlendMode.srcIn,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '¿Cuál es este Pokémon?',
+              style: GoogleFonts.outfit(fontWeight: FontWeight.w600, color: isDark ? Colors.white70 : Colors.black54),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              autofocus: true,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.outfit(fontWeight: FontWeight.w700),
+              decoration: InputDecoration(
+                hintText: 'Adivina el nombre...',
+                hintStyle: GoogleFonts.outfit(fontWeight: FontWeight.w400, color: Colors.grey),
+                filled: true,
+                fillColor: isDark ? Colors.white12 : Colors.grey[100],
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+              ),
+              onSubmitted: (val) => _validateAndCatch(outerContext, dialogContext, val),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              'Escapar',
+              style: GoogleFonts.outfit(color: Colors.grey, fontWeight: FontWeight.w600),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => _validateAndCatch(outerContext, dialogContext, controller.text),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Palette.pokemonRed,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: Text('¡Lanzar Poké Ball!', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _validateAndCatch(BuildContext outerContext, BuildContext dialogContext, String input) {
+    if (input.trim().toLowerCase() == widget.pokemon.name.toLowerCase()) {
+      Navigator.pop(dialogContext);
+      outerContext.read<CatchPokemonCubit>().catchPokemon(widget.pokemon.id, widget.pokemon.name);
+
+      ScaffoldMessenger.of(outerContext).showSnackBar(
+        SnackBar(
+          content: Text(
+            '¡Excelente! Has capturado a ${widget.pokemon.name.toUpperCase()}!',
+            style: GoogleFonts.outfit(fontWeight: FontWeight.w700),
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(dialogContext).showSnackBar(
+        SnackBar(
+          content: Text('¡Oh no! No es su nombre correcto.', style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
+          backgroundColor: Palette.pokemonRed,
+          duration: const Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   String _capitalize(String s) {

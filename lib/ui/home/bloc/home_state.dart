@@ -7,12 +7,14 @@ class HomeState with _$HomeState {
   const factory HomeState.loaded({
     required List<PokemonEntry> allPokemons,
     required List<int> favoriteIds,
+    @Default([]) List<int> caughtIds,
     required bool hasMore,
     required int currentOffset,
   }) = _Loaded;
   const factory HomeState.loadingMore({
     required List<PokemonEntry> allPokemons,
     required List<int> favoriteIds,
+    @Default([]) List<int> caughtIds,
     required int currentOffset,
   }) = _LoadingMore;
   const factory HomeState.failure(String message) = _Failure;

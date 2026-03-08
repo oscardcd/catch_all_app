@@ -224,13 +224,15 @@ class _FavoriteCarouselCard extends StatelessWidget {
                       child: Image.network(
                         pokemon.spriteUrl,
                         fit: BoxFit.contain,
+                        color: pokemon.isCaught ? null : Colors.black.withValues(alpha: 0.85),
+                        colorBlendMode: pokemon.isCaught ? null : BlendMode.srcIn,
                         errorBuilder: (_, _, _) => const Icon(Icons.catching_pokemon, color: Colors.white24, size: 50),
                       ),
                     ),
                   ),
                   // Name
                   Text(
-                    _capitalize(pokemon.name),
+                    pokemon.isCaught ? _capitalize(pokemon.name) : '???',
                     style: GoogleFonts.outfit(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
